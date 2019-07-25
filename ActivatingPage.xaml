@@ -1,0 +1,25 @@
+﻿<Page
+    x:Class="DJIWindowsSDKSample.DJISDKInitializing.ActivatingPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:DJIWindowsSDKSample.DJISDKInitializing"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid x:Name="RootGrid">
+            <StackPanel>
+                <TextBlock FontSize="36" Style="{StaticResource TitleTextBlockStyle}"> DJI Windows SDK Testing Page</TextBlock>
+                <TextBlock Style="{StaticResource BodyTextBlockStyle}"> Before using DJIWindowsSDK APIs, DJIWindowsSDK should be activated by APP Key. Read the README.md for more details. </TextBlock>
+                <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
+
+                </StackPanel>
+                <Button Margin="0,5,0,0" Click="Get_BatteryRemain"> GETBATTERY </Button>
+                <Button Margin="0,5,0,0" Click="Get_AircraftObject">GETAIRCRAFT</Button>
+            </StackPanel>
+
+        </Grid>
+
+    </Grid>
+</Page>
