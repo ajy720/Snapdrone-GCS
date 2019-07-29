@@ -1,5 +1,5 @@
 ﻿<Page
-    x:Class="DJIWindowsSDKSample.DJISDKInitializing.ActivatingPage"
+    x:Class="DJIWindowsSDKSample.DJISDKInitializing.TestingPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:DJIWindowsSDKSample.DJISDKInitializing"
@@ -11,13 +11,38 @@
         <Grid x:Name="RootGrid">
             <StackPanel>
                 <TextBlock FontSize="36" Style="{StaticResource TitleTextBlockStyle}"> DJI Windows SDK Testing Page</TextBlock>
-                <TextBlock Style="{StaticResource BodyTextBlockStyle}"> Before using DJIWindowsSDK APIs, DJIWindowsSDK should be activated by APP Key. Read the README.md for more details. </TextBlock>
+                <TextBlock Style="{StaticResource BodyTextBlockStyle}"> Before using DJIWindowsSDK APIs, DJIWindowsSDK should be activated by APP Key. Read the README.md for more details.</TextBlock>
                 <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
 
                 </StackPanel>
-                <Button Margin="0,5,0,0" Click="Get_BatteryRemain"> GETBATTERY </Button>
-                <Button Margin="0,5,0,0" Click="Get_AircraftObject">GETAIRCRAFT</Button>
+
+
             </StackPanel>
+            <TextBlock FontSize="20" Margin="10,103,0,123"  Name="activateStateTextBlock"> Not Activated.</TextBlock>
+
+
+
+            <Button Margin="10,160,0,0" Click="Get_AircraftObject" Content="GET AIRCRAFT" VerticalAlignment="Top" Width=" 130"/>
+            <TextBlock Margin="200,166,0,-6" Name="CurrentAircaft" Text="Default"></TextBlock>
+
+            <Button Margin="10,220,0,0" Click="Get_BatteryRemain" Content="GET BATTERY" VerticalAlignment="Top" Width="130"/>
+            <TextBlock Margin="200,226,0,-6" Name="CurrentBattery" Text="Default"></TextBlock>
+
+            <Button Margin="10,280,0,0" Click="Get_Location" Content="GET LOCATION"  VerticalAlignment="Top" Width="130"/>
+            <TextBlock Margin="200,286,0,-6" Name="CurrentLongitude" Text="Default"/>
+            <TextBlock Margin="200,316,0,-6" x:Name="CurrentLatitude" Text="Default"/>
+            <TextBlock Margin="200,346,0,-6" x:Name="CurrentAltitude" Text="Default"/>
+
+            <Button Margin="10,400,0,0" Click="Get_GpsSignalLevel" Content="GPS Signal Level"  VerticalAlignment="Top" Width="130"/>
+            <TextBlock Margin="200,406,0,-6" Name="CurrentGpsSignalLevel" Text="Default"/>
+
+            <Button Margin="10,460,0,0" Click="Get_SerialNumber" Content="SerialNumber"  VerticalAlignment="Top" Width="130"/>
+            <TextBlock Margin="200,466,0,-6" x:Name="SerialNumber" Text="Default"/>
+
+            <Button Margin="10,520,0,0" Click="Get_Photo" Content="Take Photo"  VerticalAlignment="Top" Width="130"/>
+            <TextBlock Margin="200,526,0,-66" x:Name="PhotoMode" Text="Default"/>
+
+            <SwapChainPanel x:Name="swapChainPanel" Visibility="Visible" Margin="10,557,833,10" />
 
         </Grid>
 
