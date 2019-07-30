@@ -39,12 +39,58 @@
             <Button Margin="10,460,0,0" Click="Get_SerialNumber" Content="SerialNumber"  VerticalAlignment="Top" Width="130"/>
             <TextBlock Margin="200,466,0,-6" x:Name="SerialNumber" Text="Default"/>
 
-            <Button Margin="10,520,0,0" Click="Get_Photo" Content="Take Photo"  VerticalAlignment="Top" Width="130"/>
-            <TextBlock Margin="200,526,0,-66" x:Name="PhotoMode" Text="Default"/>
+            <Button Margin="797,304,0,0" Click="Get_Photo" Content="Take Photo"  VerticalAlignment="Top" Width="130"/>
+            <TextBlock Margin="949,310,-749,180" x:Name="RemainSpace" Text="Default"/>
+            <TextBlock Margin="949,340,-749,159" x:Name="ErrorinPhoto" Text="Default"/>
 
-            <SwapChainPanel x:Name="swapChainPanel" Visibility="Visible" Margin="10,557,833,10" />
+
+            <TextBlock HorizontalAlignment="Left" Margin="525,100,0,0" Text="TextBlock" TextWrapping="Wrap" VerticalAlignment="Top" RenderTransformOrigin="-0.71,-2.8"/>
+            <RadioButton GroupName="Shootmode" Checked="Select_Photo_Mode" Tag="N" Margin="525,130,0,0" Content="Normal" VerticalAlignment="Top"/>
+            <RadioButton GroupName="Shootmode" Checked="Select_Photo_Mode" Tag="H" Margin="525,160,0,0" Content="HDR" VerticalAlignment="Top"/>
+            <RadioButton GroupName="Shootmode" Checked="Select_Photo_Mode" Tag="B" Margin="525,190,0,0" Content="Burst" VerticalAlignment="Top"/>
+            <RadioButton GroupName="Shootmode" Checked="Select_Photo_Mode" Tag="A" Margin="525,220,0,0" Content="AEB" VerticalAlignment="Top"/>
+            <RadioButton GroupName="Shootmode" Checked="Select_Photo_Mode" Tag="I" Margin="655,145,0,0" Content="Interval" VerticalAlignment="Top"/>
+            <RadioButton GroupName="Shootmode" Checked="Select_Photo_Mode" Tag="R" Margin="655,175,0,0" Content="RAW_Burst" VerticalAlignment="Top"/>
+            <RadioButton GroupName="Shootmode" Checked="Select_Photo_Mode" Tag="E" Margin="655,205,0,0" Content="EHDR" VerticalAlignment="Top"/>
+
+
+
+            <TextBlock HorizontalAlignment="Left" Margin="525,260,0,0" Text="Select FIle Format" TextWrapping="Wrap" VerticalAlignment="Top"/>
+            <RadioButton GroupName="Format" Content="RAW" Margin="525,290,0,0" VerticalAlignment="Top" Tag="RAW" Checked="Select_Format"/>
+            <RadioButton GroupName="Format" Content="JPEG" Margin="525,320,0,0" VerticalAlignment="Top" Tag="JPEG" Checked="Select_Format"/>
+            <RadioButton GroupName="Format" Content="RAW_JPEG" Margin="525,350,0,0" VerticalAlignment="Top" Tag="RAW_JPEG" Checked="Select_Format"/>
+
+
+            <TextBlock HorizontalAlignment="Left" Margin="525,400,0,0" Text="Select Focus Mode" TextWrapping="Wrap" VerticalAlignment="Top"/>
+            <RadioButton GroupName="Focus" Checked="Select_FocusMode" Tag="M"  Content="Manual" Margin="525,430,0,0" VerticalAlignment="Top"/>
+            <RadioButton GroupName="Focus" Checked="Select_FocusMode" Tag="AF" Content="AutoFocus" Margin="525,460,0,0" VerticalAlignment="Top"/>
+            <RadioButton GroupName="Focus" Checked="Select_FocusMode" Tag="AFC" Content="AF Continuous" Margin="525,490,0,0" VerticalAlignment="Top"/>
+
+
+
+            <Button Content="Master" Margin="10,520,0,0" VerticalAlignment="Top" Click="Get_DroneData_Master"/>
+            <Button Content="DeMaster" Margin="110,520,0,0" VerticalAlignment="Top" Click="Get_DroneData_DeMaster"/>
+
+
+            <Button Content="Take Off" Margin="10,580,0,0" VerticalAlignment="Top" Width="130" Command="{Binding StartTakeoff}"/>
+            <TextBlock x:Name="takeOffError"  Margin="200,586,0,0" Text="Take Off Error" TextWrapping="Wrap"/>
+            <Button Content="Throttle_Up" Margin="534,768,0,0" VerticalAlignment="Top" Click="Throttle_Up"/>
+            <Button Content="Throttle_Down" Margin="525,821,0,0" VerticalAlignment="Top" Click="Throttle_Down"/>
+
+
+            <Button Content="Pitch_Up" Margin="724,768,0,0" VerticalAlignment="Top" Click="Pitch_Up"/>
+            <Button Content="Pitch_Down" Margin="715,821,0,0" VerticalAlignment="Top" Click="Pitch_Down"/>
+
+            <Button Content="Yaw_Up" Margin="949,768,0,0" VerticalAlignment="Top" Click="Yaw_Up"/>
+            <Button Content="Yaw_Down" Margin="940,821,0,0" VerticalAlignment="Top" Click="Yaw_Down"/>
+
+            <Button Content="Roll_Up" Margin="1156,768,0,0" VerticalAlignment="Top" Click="Roll_Up"/>
+            <Button Content="Roll_Down" Margin="1147,821,0,0" VerticalAlignment="Top" Click="Roll_Down"/>
+            <!--<SwapChainPanel x:Name="swapChainPanel" Visibility="Visible" Margin="10,557,833,10" />-->
 
         </Grid>
 
     </Grid>
 </Page>
+
+    
