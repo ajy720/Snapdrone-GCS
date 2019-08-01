@@ -72,8 +72,9 @@
             <Button Content="DeMaster" Margin="110,520,0,0" VerticalAlignment="Top" Click="Get_DroneData_DeMaster"/>
 
 
-            <Button Content="Take Off" Margin="10,580,0,0" VerticalAlignment="Top" Width="130" Command="{Binding StartTakeoff}"/>
+            <Button Content="Take Off" Margin="10,580,0,0" VerticalAlignment="Top" Width="130" Click="Start_Take_Off"/>
             <TextBlock x:Name="takeOffError"  Margin="200,586,0,0" Text="Take Off Error" TextWrapping="Wrap"/>
+            <!--
             <Button Content="Throttle_Up" Margin="534,768,0,0" VerticalAlignment="Top" Click="Throttle_Up"/>
             <Button Content="Throttle_Down" Margin="525,821,0,0" VerticalAlignment="Top" Click="Throttle_Down"/>
 
@@ -86,6 +87,35 @@
 
             <Button Content="Roll_Up" Margin="1156,768,0,0" VerticalAlignment="Top" Click="Roll_Up"/>
             <Button Content="Roll_Down" Margin="1147,821,0,0" VerticalAlignment="Top" Click="Roll_Down"/>
+
+            <Slider x:Name="Yaw" Margin="525,586,875,10" Width="100" Maximum="1" Minimum="-1" TickFrequency="0.1" ValueChanged="Yaw_change"/>
+            <Slider x:Name="Throttle" Margin="609.75,469,790.25,127" Width="100" Maximum="1" Minimum="-1" TickFrequency="0.1" ValueChanged="Throttle_change" RenderTransformOrigin="0.5,0.5" UseLayoutRounding="False" d:LayoutRounding="Auto" >
+                <Slider.RenderTransform>
+                    <CompositeTransform Rotation="-90"/>
+                </Slider.RenderTransform>
+            </Slider>
+
+            <Slider x:Name="Pitch" Margin="725,586,675,10" Width="100" Maximum="1" Minimum="-1" TickFrequency="0.1" ValueChanged="Pitch_change" />
+            <Slider x:Name="Roll" Margin="816.5,468.25,583.5,127.75" Width="100" Maximum="1" Minimum="-1" TickFrequency="0.1" ValueChanged="Roll_change" RenderTransformOrigin="0.5,0.5" UseLayoutRounding="False" d:LayoutRounding="Auto" >
+                <Slider.RenderTransform>
+                    <CompositeTransform Rotation="-90"/>
+                </Slider.RenderTransform>
+            </Slider>
+            <Slider x:Name="slider" HorizontalAlignment="Left" Margin="43,647,0,0" VerticalAlignment="Top" Width="100"/>
+            
+            <Button x:Name="button" Content="STOP" Margin="408,788,0,0" VerticalAlignment="Top" Click="Emergency"/>
+            -->
+
+            <Button Content="Init Mission" Click="Init_Mission" Margin="11,630,0,0" VerticalAlignment="Top"/>
+            
+            <Button Content="Load Mission" Click="Load_Mission" Margin="11,670,0,0" VerticalAlignment="Top"/>
+            <TextBlock x:Name="LoadMissionError"  Margin="200,676,0,0" Text="Load Mission Error" TextWrapping="Wrap"/>
+            
+            <Button Content="Execute Mission" Click="Execute_Mission" Margin="11,710,0,0" VerticalAlignment="Top"/>
+            <TextBlock x:Name="ExecuteMissionError"  Margin="200,716,0,0" Text="Execute Mission Error" TextWrapping="Wrap"/>
+            
+            <Button Content="Socket Send" Margin="10,750,0,0" Click="Socket_Send" VerticalAlignment="Top"/>
+            
             <!--<SwapChainPanel x:Name="swapChainPanel" Visibility="Visible" Margin="10,557,833,10" />-->
 
         </Grid>

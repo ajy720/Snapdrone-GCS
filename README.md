@@ -251,6 +251,6 @@ void UpdateJoystickValue(float throttle, float roll, float pitch, float yaw)
 
 - 각 파라미터는 -1 ~ 1 의 실수이다.
 - throttle - 드론의 상하 제어 / 컨트롤러의 좌측 상하
-- roll - 드론의 좌우 이동 제어 / 컨트롤러의 우측 좌우
+- roll - 드론의 좌우 방향 제어 / 컨트롤러의 좌측 좌우
 - pitch - 드론의 전후 제어 / 컨트롤러의 우측 상하
-- yaw - 드론의 좌우 방향 제어 / 컨트롤러의 좌측 좌우
+- yaw - 드론의 좌우 이동 제어 / 컨트롤러의 우측 좌우

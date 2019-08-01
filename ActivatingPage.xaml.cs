@@ -1,6 +1,4 @@
-﻿using DJI.WindowsSDK;
-using DJI.WindowsSDK.Components;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -15,32 +13,216 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using DJIWindowsSDKSample.FPV;
-using DJIVideoParser;
+
+using DJI.WindowsSDK;
+
+using Newtonsoft.Json;
 using Quobject.SocketIoClientDotNet.Client;
+
+using Windows.UI.Popups;
 
 namespace DJIWindowsSDKSample.DJISDKInitializing
 {
+    public class Location
+    {
+        [JsonProperty("Longitude")]
+        private String _longitude;
+        [JsonProperty("Latitude")]
+        private String _latitude;
+
+        public String Longitude() => this._longitude;
+        public void Longitude(String longitude) => this._longitude = longitude;
+        //public String Longitude
+        //{
+        //    get => _longitude;
+        //    set => _longitude = value;
+        //}
+
+        public String Latitude() => this._latitude;
+        public void Latitude(String latitude) => this._latitude = latitude;
+        //public String Latitude
+        //{
+        //    get => _latitude;
+        //    set => _latitude = value;
+        //}
+
+        // Constructor
+        public Location(String longitude, String latitude)
+        {
+            Longitude(longitude);
+            Latitude(latitude);
+        }
+    }
+
+
+    public class DroneData
+    {
+        [JsonProperty("Battery")]
+        private int _battery;
+        [JsonProperty("Location")]
+        private Location _location;
+        [JsonProperty("Altitude")]
+        private String _altitude;
+
+        public DroneData()
+        {
+            // Default Constructor
+        }
+
+        public DroneData(int battery, String longitude, String latitude, String altitude)
+        {
+            // Constructor
+            _battery = battery;
+            _location = new Location(longitude, latitude);
+            _altitude = altitude;
+        }
+
+        public int Battery() => this._battery;
+        public void Battery(int bat) => this._battery = bat;
+        //public int Battery
+        //{
+        //    get => _battery;
+        //    set => _battery = value;
+        //}
+
+        public Location Location() => this._location;
+        public void Location(Location location) => this._location= location;
+        //public Location Location
+        //{
+        //    get => _location;
+        //    set => _location = value;
+        //}
+
+        public String Altitude() => this._altitude;
+        public void Altitude(String altitude) => this._altitude = altitude;
+
+        public void SetLocation(String longitude, String latitude)
+        {
+            _location.Longitude(longitude); // = longitude;
+            _location.Latitude(latitude); // = latitude;
+        }
+    }
+
     public sealed partial class TestingPage : Page
     {
-        private DJIVideoParser.Parser videoParser;
-
+        Socket socket = IO.Socket("http://api.teamhapco.com/");
+        DroneData DD = new DroneData(0, "0", "0", "0");
+        WaypointMission WaypointMission = new WaypointMission();
+        
         public TestingPage()
         {
             this.InitializeComponent();
+
+            System.Diagnostics.Debug.WriteLine("socket connecting start");
+            socket.On(Socket.EVENT_CONNECT, () =>
+            {
+                String JsonString = JsonConvert.SerializeObject(DD);
+                System.Diagnostics.Debug.WriteLine("connect success!!");
+                socket.Emit("get gps", JsonString);
+                System.Diagnostics.Debug.WriteLine("Data to 'get gps' : " + JsonString);
+            });
+
             DJISDKManager.Instance.SDKRegistrationStateChanged += Instance_SDKRegistrationEvent;
             DJISDKManager.Instance.RegisterApp("c9e68649b0d02247fc1410eb");
+        }
+
+        private async void Init_Mission(object sender, RoutedEventArgs value)
+        {
+            double nowLat = Convert.ToDouble(DD.Location().Latitude());
+            double nowLng = Convert.ToDouble(DD.Location().Longitude());
+
+            WaypointMission mission = new WaypointMission()
+            {
+                waypointCount = 0,
+                maxFlightSpeed = 15,
+                autoFlightSpeed = 10,
+                finishedAction = WaypointMissionFinishedAction.NO_ACTION,
+                headingMode = WaypointMissionHeadingMode.AUTO,
+                flightPathMode = WaypointMissionFlightPathMode.NORMAL,
+                gotoFirstWaypointMode = WaypointMissionGotoFirstWaypointMode.SAFELY,
+                exitMissionOnRCSignalLostEnabled = false,
+                pointOfInterest = new LocationCoordinate2D()
+                {
+                    latitude = 0,
+                    longitude = 0
+                },
+                gimbalPitchRotationEnabled = true,
+                repeatTimes = 0,
+                missionID = 0,
+                waypoints = new List<Waypoint>()
+                            {
+                                InitDumpWaypoint(nowLat+0.0001, nowLng+0.00015),
+                                InitDumpWaypoint(nowLat+0.0001, nowLng-0.00015),
+                                InitDumpWaypoint(nowLat-0.0001, nowLng-0.00015),
+                                InitDumpWaypoint(nowLat-0.0001, nowLng+0.00015),
+                            }
+            };
+            WaypointMission = mission;
+        }
+
+        private async void Load_Mission(object sender, RoutedEventArgs value)
+        {
+            SDKError err = DJISDKManager.Instance.WaypointMissionManager.GetWaypointMissionHandler(0).LoadMission(this.WaypointMission);
+            System.Diagnostics.Debug.WriteLine("SDK load mission: {0}", err.ToString());
+            LoadMissionError.Text = "SDK load mission: {0}" + err.ToString();
+        }
+
+        private async void Execute_Mission(object sender, RoutedEventArgs value)
+        {
+            var err = await DJISDKManager.Instance.WaypointMissionManager.GetWaypointMissionHandler(0).StartMission();
+            System.Diagnostics.Debug.WriteLine("Start mission: {0}" + err.ToString());
+            ExecuteMissionError.Text = "Start mission: {0}" + err.ToString();
+            
+        }
+
+        private Waypoint InitDumpWaypoint(double latitude, double longitude)
+        {
+            Waypoint waypoint = new Waypoint()
+            {
+                location = new LocationCoordinate2D() { latitude = latitude, longitude = longitude },
+                altitude = 20,
+                gimbalPitch = -30,
+                turnMode = WaypointTurnMode.CLOCKWISE,
+                heading = 0,
+                actionRepeatTimes = 1,
+                actionTimeoutInSeconds = 60,
+                cornerRadiusInMeters = 0.2,
+                speed = 0,
+                shootPhotoTimeInterval = -1,
+                shootPhotoDistanceInterval = -1,
+                waypointActions = new List<WaypointAction>()
+            };
+            return waypoint;
+        }
+
+        private async void Start_Take_Off(object sender, RoutedEventArgs value)
+        {
+            var res = await DJISDKManager.Instance.ComponentManager.GetFlightControllerHandler(0, 0).StartTakeoffAsync();
+            System.Diagnostics.Debug.WriteLine("Start send takeoff command: " + res.ToString());
+            takeOffError.Text = "Start send takeoff command: " + res.ToString();
+        }
+
+        private void Socket_Send(object sender, RoutedEventArgs e)
+        {
+            String JsonString = JsonConvert.SerializeObject(DD);
+
+            socket.Emit("get gps", JsonString);
+
+            System.Diagnostics.Debug.WriteLine("Data to 'get gps' => " + JsonString);
+
+            socket.On("send gps", (data) => System.Diagnostics.Debug.WriteLine("Data from 'send gps' => " + data));
         }
 
         private async void Get_DroneData_Master(object sender, RoutedEventArgs value)
         {
             DJISDKManager.Instance.ComponentManager.GetProductHandler(0).ProductTypeChanged += Get_AircraftObject;
             DJISDKManager.Instance.ComponentManager.GetBatteryHandler(0, 0).ChargeRemainingInPercentChanged += Get_BatteryRemain;
-            //DJISDKManager.Instance.ComponentManager.GetFlightControllerHandler(0, 0).AircraftLocationChanged += Get_Location;
+            DJISDKManager.Instance.ComponentManager.GetFlightControllerHandler(0, 0).AircraftLocationChanged += Get_Location;
             DJISDKManager.Instance.ComponentManager.GetFlightControllerHandler(0, 0).AltitudeChanged += Get_Altitude;
             DJISDKManager.Instance.ComponentManager.GetFlightControllerHandler(0, 0).GPSSignalLevelChanged += Get_GpsSignalLevel;
             DJISDKManager.Instance.ComponentManager.GetProductHandler(0).SerialNumberChanged += Get_SerialNumber;
         }
+
         private async void Get_DroneData_DeMaster(object sender, RoutedEventArgs value)
         {
             DJISDKManager.Instance.ComponentManager.GetProductHandler(0).ProductTypeChanged -= Get_AircraftObject;
@@ -163,7 +345,7 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
         private async void Get_BatteryRemain(object sender, RoutedEventArgs value)
         {
             var bat = (await DJISDKManager.Instance.ComponentManager.GetBatteryHandler(0, 0).GetChargeRemainingInPercentAsync()).value?.value;
-            
+            DD.Battery((int)bat); // = (int)bat;
             System.Diagnostics.Debug.WriteLine("Remaining Battery : " + bat);
             CurrentBattery.Text = "Remaining Battery : " + bat;
         }
@@ -173,6 +355,7 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
             //var bat = (await DJISDKManager.Instance.ComponentManager.GetBatteryHandler(0, 0).GetChargeRemainingInPercentAsync()).value?.value;
             await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
             {
+                DD.Battery((int)bat?.value); //= (int)bat?.value;
                 System.Diagnostics.Debug.WriteLine("Remaining Battery : " + bat?.value);
                 CurrentBattery.Text = "Remaining Battery : " + bat?.value;
             });
@@ -185,7 +368,7 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
 
             String latitude = location?.latitude.ToString();
             String longitude = location?.longitude.ToString();
-
+            DD.SetLocation(longitude, latitude);
             var altitude = (await DJISDKManager.Instance.ComponentManager.GetFlightControllerHandler(0, 0).GetAltitudeAsync()).value?.value;
 
             System.Diagnostics.Debug.WriteLine("Longitude : " + longitude);
@@ -203,9 +386,11 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
             {
                 String longitude = value?.longitude.ToString();
                 String latitude = value?.latitude.ToString();
+                DD.SetLocation(longitude, latitude);
 
                 System.Diagnostics.Debug.WriteLine("Longitude : " + longitude);
                 System.Diagnostics.Debug.WriteLine("Latitude : " + latitude);
+
                 CurrentLongitude.Text = "Longitude : " + longitude;
                 CurrentLatitude.Text = "Latitude : " + latitude;
             });
@@ -215,6 +400,7 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
         {
             await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
             {
+                DD.Altitude(value?.value.ToString());
                 System.Diagnostics.Debug.WriteLine("Altitude : " + value?.value);
                 CurrentAltitude.Text = "Altitude : " + value?.value;
             });
@@ -284,14 +470,20 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
             });
         }
 
+        //private async void Throttle_change(object sender, RangeBaseValueChangedEventArgs e) => DJISDKManager.Instance.VirtualRemoteController.UpdateJoystickValue((float)e.NewValue, 0, 0, 0);
+        //private async void Roll_change(object sender, RangeBaseValueChangedEventArgs e) => DJISDKManager.Instance.VirtualRemoteController.UpdateJoystickValue(0, (float)e.NewValue, 0, 0);
+        //private async void Pitch_change(object sender, RangeBaseValueChangedEventArgs e) => DJISDKManager.Instance.VirtualRemoteController.UpdateJoystickValue(0, 0, (float)e.NewValue, 0);
+        //private async void Yaw_change(object sender, RangeBaseValueChangedEventArgs e) => DJISDKManager.Instance.VirtualRemoteController.UpdateJoystickValue(0, 0, 0, (float)e.NewValue);
+        //private async void Throttle_Up(object sender, RoutedEventArgs value) => DJISDKManager.Instance.VirtualRemoteController.UpdateJoystickValue(1, 0, 0, 0);
+        //private async void Throttle_Down(object sender, RoutedEventArgs value) => DJISDKManager.Instance.VirtualRemoteController.UpdateJoystickValue(-1, 0, 0, 0);
+        //private async void Pitch_Up(object sender, RoutedEventArgs value) => DJISDKManager.Instance.VirtualRemoteController.UpdateJoystickValue(0, 0, 1, 0);
+        //private async void Pitch_Down(object sender, RoutedEventArgs value) => DJISDKManager.Instance.VirtualRemoteController.UpdateJoystickValue(0, 0, -1, 0);
+        //private async void Yaw_Up(object sender, RoutedEventArgs value) => DJISDKManager.Instance.VirtualRemoteController.UpdateJoystickValue(0, 0, 0, 1);
+        //private async void Yaw_Down(object sender, RoutedEventArgs value) => DJISDKManager.Instance.VirtualRemoteController.UpdateJoystickValue(0, 0, 0, -1);
+        //private async void Roll_Up(object sender, RoutedEventArgs value) => DJISDKManager.Instance.VirtualRemoteController.UpdateJoystickValue(0, 1, 0, 0);
+        //private async void Roll_Down(object sender, RoutedEventArgs value) => DJISDKManager.Instance.VirtualRemoteController.UpdateJoystickValue(0, -1, 0, 0);
+        private async void Emergency(object sender, RoutedEventArgs value) => DJISDKManager.Instance.VirtualRemoteController.UpdateJoystickValue(0, 0, 0, 0);
 
-        private async void Throttle_Up(object sender, RoutedEventArgs value) => DJISDKManager.Instance.VirtualRemoteController.UpdateJoystickValue(1, 0, 0, 0);
-        private async void Throttle_Down(object sender, RoutedEventArgs value) => DJISDKManager.Instance.VirtualRemoteController.UpdateJoystickValue(-1, 0, 0, 0);
-        private async void Pitch_Up(object sender, RoutedEventArgs value) => DJISDKManager.Instance.VirtualRemoteController.UpdateJoystickValue(0, 0, 1, 0);
-        private async void Pitch_Down(object sender, RoutedEventArgs value) => DJISDKManager.Instance.VirtualRemoteController.UpdateJoystickValue(0, 0, -1, 0);
-        private async void Yaw_Up(object sender, RoutedEventArgs value) => DJISDKManager.Instance.VirtualRemoteController.UpdateJoystickValue(0, 0, 0, 1);
-        private async void Yaw_Down(object sender, RoutedEventArgs value) => DJISDKManager.Instance.VirtualRemoteController.UpdateJoystickValue(0, 0, 0, -1);
-        private async void Roll_Up(object sender, RoutedEventArgs value) => DJISDKManager.Instance.VirtualRemoteController.UpdateJoystickValue(0, 1, 0, 0);
-        private async void Roll_Down(object sender, RoutedEventArgs value) => DJISDKManager.Instance.VirtualRemoteController.UpdateJoystickValue(0, -1, 0, 0);
+        
     }
 }
