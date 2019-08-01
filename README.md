@@ -254,3 +254,101 @@ void UpdateJoystickValue(float throttle, float roll, float pitch, float yaw)
 - roll - 드론의 좌우 방향 제어 / 컨트롤러의 좌측 좌우
 - pitch - 드론의 전후 제어 / 컨트롤러의 우측 상하
 - yaw - 드론의 좌우 이동 제어 / 컨트롤러의 우측 좌우
+
+
+
+---
+
+- # 8/2 WaypointMission에 대하여(미션 플라이트)
+
+  작성일 : 8/2(금) AM 1:20 ~
+
+  ## Waypoint Mission이란?
+
+- Location 정보를 주면, 그 순서에 따라 좌표를 향해 비행하는 모드.
+
+
+
+------
+
+## Waypoint Mission의 속성들(중요한 것만)
+
+- WaypointMissionState - enum
+
+  | property         | description                                                  |
+  | ---------------- | ------------------------------------------------------------ |
+  | DISCONNECTED     | 모바일 기기와, 컨트롤러와, 기체의 연결이 끊김                |
+  | RECOVERING       | 각 기기 사이의 연결을 구성하는 중. operator는 기체의 상태와 동기화한다. |
+  | READY_TO_UPROAD  | 기체에 미션을 올릴 준비가 되었다.                            |
+  | UPLOADING        | 미션 업로드가 성공적으로 시작되었음.                         |
+  | READY_TO_EXECUTE | Waypoint Mission 업로드가 완료되었고 기체가 실행할 준비가 된 상태. |
+  | EXECUTING        | 실행이 성공적으로 시작됨.                                    |
+  | EXECUTE_PAUSED   | Waypoint Mission이 성공적으로 중단되었음. 사용자는 실행을 계속하기 위해 resume mission을 call 할 수 있다. |
+
+  
+
+- WaypointMissionStateTransition - struct
+
+  | type                 | variable name | description                          |
+  | -------------------- | ------------- | ------------------------------------ |
+  | WaypointMissionState | previous      | 이전 Waypoint Mission handler의 상태 |
+  | WaypointMissionState | current       | 현재 Waypoint Mission handler의 상태 |
+
+  
+
+- WaypointMissionGotoFirstWaypointMode - enum
+
+  | property       | description                                                  |
+  | -------------- | ------------------------------------------------------------ |
+  | SAFELY         | Waypoint로 안전하게 간다. 기체의 현재 고도가 목적지의 고도보다 낮다면 목적지의 고도와 같게 상승한다. 그리고 기체는 목적지의 좌표로 현재 고도에서 이동하고, 목적지의 고도로 계속 진행한다(목적지의 고도와 계속 맞춘다는 말인듯?) |
+  | POINT_TO_POINT | 직선거리로 바로 간다.                                        |
+
+  
+
+- WaypointMissionExecutionState - struct
+
+  | type                              | variable name       | description                                                  |
+  | --------------------------------- | ------------------- | ------------------------------------------------------------ |
+  | int                               | targetWaypointIndex | 기체가 진행 할 다음 Waypoint의 인덱스.                       |
+  | int                               | totalWaypointCount  | Waypoint Mission의 총 Waypoint 갯수.                         |
+  | bool                              | isWaypointReached   | 기체가 Waypoint에 도착하면 true가 되고, Waypoint action과 heading(목적)이 완전히 변경되면, 이 값은 증가하고 속성이 false로 변한다. |
+  | bool                              | isExecutionFinish   | Waypoint Mission이 끝났는지 여부                             |
+  | WaypointMission<br />ExecuteState | state               | 현재 Waypoint Mission handler의 상태                         |
+
+  
+
+- WaypointMissionExecuteState - enum
+
+  | property              | description                                                  |
+  | --------------------- | ------------------------------------------------------------ |
+  | INITIALIZING          | Waypoint Mission이 초기화되는중이다. 미션이 시작되었고 기체가 첫번째 목적지를 향해 가는 중이라는 의미. |
+  | MOVING                | 기체가 현재 미션의 다음 목적지를 향해 이동하는 중이다.  WaypointMissionFlightPathMode가 NORMAL로 set 되었을 때 발생한다. |
+  | CURVE_MODE_MOVING     | 기체가 현재 움직이는 중이다. WaypointMissionFlightPathMode가 CURVED로 set 되었을 때 발생한다. |
+  | CURVE_MODE_TURNING    | 기체가 현재 움직이는 중이다. WaypointMissionFlightPathMode가 CURVED로 set 되었을 때 발생한다. |
+  | BEGIN_ACTION          | 기체가 목적지에 도착했고, 새 방향을 향해 회전했고, 지금은 Action을 진행하는 중이다. 이 상태는 waypoint actions가 실행을 시작하기 전에 호출될 것이고, 각각의 waypoint action에 발생할 것이다. |
+  | DOING_ACTION          | 기체가 waypoint에 있고, action을 실행하는 중이다.            |
+  | FINISHED_ACTION       | 기체가 waypoint에 있고, 현재 waypoint action 실행을 끝냈다. 이 상태는 각 waypoint action마다 한 번 발생한다. |
+  | RETURN_TO_FIRST_POINT | 기체가 첫 번째 waypoint로 돌아왔다.WaypointMissionFinishedAction이 GO_FIRST_WAYPOINT로 set 되었을 때 발생한다. |
+  | PAUSED                | 미션이 현재 사용자에 의해 중지되었다.                        |
+
+
+
+- WaypointMission - struct
+
+  | type                                             | variable name                          | description                                                  |
+  | ------------------------------------------------ | -------------------------------------- | ------------------------------------------------------------ |
+  | int                                              | waypointCount                          | WM의 waypoint 갯수.                                          |
+  | double                                           | maxFlightSpeed                         | 기체가 목적지로 이동할 때 최대 속도를 조정한다. 컨트롤러의 throttle 스틱을 이용해 속도를 높여도 막혀버림. 이 변수는 2~15의 범위를 가진다. 기체의 속도는 [0, maxFlightSpeed] 사이에서 1000단계로 나뉜다. |
+  | double                                           | autoFlightSpeed                        | 기체가 이동할 때 기본 속도를 [-15, 15]m/s로 지정한다. <br />autoFlightSpeed이<br /> > 0 : 이 변수값 + 조종기 값의 속도로 비행(maxFlightSpeed 이하로)<br /><br />= 0 : 오로지 컨트롤러의 조작에 의해 속도가 조절됨.<br />< 0 && (첫번째 waypoint에 위치함) : 컨트롤러로 속도를 positive로 만들기 전까지공중에 떠 있는다. |
+  | WaypointMission<br />FinishedAction              | finishedAction                         | 기체가 WM을 끝냈을 때 가져오는 Action                        |
+  | WaypointMission<br />HeadingMode                 | headingMode                            | 목적지 사이를 이동할 때 같은 기체의 방향. 기본은 AUTO        |
+  | WaypointMission<br />FlightPathMode              | flightPathMode                         | 기체가 따라가는 목적지 사이의 길. 기체는 목적지 사이를 직선으로 바로 비행하거나, 목적지 위치가 curve의 일부로 정의되었을 때,목적지 가깝게 곡선을 그리며 돈다 |
+  | WaypointMission<br />GotoFirst<br />WaypointMode | gotoFirst<br />WaypointMode            | 어떻게 기체가 현재 위치에서 첫번째 목적지로 올 것인지 정의한다. 기본은 SAFELY(WaypointMissionGotoFirstWaypointMode) |
+  | bool                                             | exitMission<br />OnRCSignalLostEnabled | 기체와 컨트롤러 사이 연결을 잃어버렸을 때 미션을 멈출 것인지 아닌지 결정한다. 기본은 FALSE(bool) |
+  | Location<br />Coordinate2D                       | pointOfInterest                        | WaypointMission중 기체의 방향이 관심지점(POI)으로 고정된다. WaypointMissionHeadingMode headingMode가 TOWARD_POINT_OF_INTEREST일 때 사용한다 |
+  | bool                                             | gimbalPitch<br />RotationEnabled       | 참이면 짐벌 pitch rotation이 WaypointMission 중에 제어될 수 있다. TRUE 일 때, Waypoint 안의 double gimbalPitch가 짐벌 피치를 조정할 때 사용된다. |
+  | int                                              | repeatTimes                            | 미션 실행은 1번 이상 반복될 수 있다. 0은 미션이 한 번 실행되는 것을 의미하고, 반복되지 않는다. 1의 의미는 총 두 번 실행한다. (기본 1회 + value = 총 execute) |
+  | int                                              | missionID                              | mission ID가 WaypointMission에 할당된다.                     |
+
+------
+
