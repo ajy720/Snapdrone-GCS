@@ -259,11 +259,11 @@ void UpdateJoystickValue(float throttle, float roll, float pitch, float yaw)
 
 ---
 
-- # 8/2 WaypointMission에 대하여(미션 플라이트)
+# 8/2 WaypointMission에 대하여(미션 플라이트)
 
-  작성일 : 8/2(금) AM 1:20 ~
+작성일 : 8/2(금) AM 1:20 ~
 
-  ## Waypoint Mission이란?
+## Waypoint Mission이란?
 
 - Location 정보를 주면, 그 순서에 따라 좌표를 향해 비행하는 모드.
 
