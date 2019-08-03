@@ -351,4 +351,7 @@ void UpdateJoystickValue(float throttle, float roll, float pitch, float yaw)
   | int                                              | missionID                              | mission ID가 WaypointMission에 할당된다.                     |
 
 ------
+# 8/3 Upload 
+작성일 : 8/3(토)
 
+Mission Flight 기능 코드를 넣었지만, 아직 INVALID_REQUEST_IN_CURRENT_STATE 에러로 실행 불가. 그 외 RTH, Take off, Landing 기능은 정상 작동. 추가해야 할 것은 Landing을 눌러도 완전 착륙은 x, 고도를 낮출 뿐
