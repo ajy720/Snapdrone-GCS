@@ -25,9 +25,9 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
 {
     public class Location
     {
-        [JsonProperty("Longitude")]
+        [JsonProperty("longitude")]
         private String _longitude;
-        [JsonProperty("Latitude")]
+        [JsonProperty("latitude")]
         private String _latitude;
 
         public String Longitude() => this._longitude;
@@ -54,14 +54,13 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
         }
     }
 
-
     public class DroneData
     {
-        [JsonProperty("Battery")]
+        [JsonProperty("battery")]
         private int _battery;
-        [JsonProperty("Location")]
+        [JsonProperty("location")]
         private Location _location;
-        [JsonProperty("Altitude")]
+        [JsonProperty("altitude")]
         private String _altitude;
 
         public DroneData()
@@ -103,10 +102,33 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
         }
     }
 
+    public class UserData
+    {
+        [JsonProperty("location")]
+        private Location _location;
+
+        public UserData()
+        {
+            //Default Constructor
+        }
+
+        public UserData(String longitude, String latitude) => _location = new Location(longitude, latitude);
+
+        public Location Location() => this._location;
+        public void Location(Location location) => this._location = location;
+
+        public void SetLocation(String longitude, String latitude)
+        {
+            _location.Longitude(longitude); // = longitude;
+            _location.Latitude(latitude); // = latitude;
+        }
+    }
+
     public sealed partial class TestingPage : Page
     {
-        Socket socket = IO.Socket("http://api.teamhapco.com/");
-        DroneData DD = new DroneData(0, "0", "0", "0");
+        Socket socket = IO.Socket("https://api.teamhapco.com/");
+        DroneData DD = new DroneData(80, "127", "37", "1.0");
+        UserData UD = new UserData("127", "37");
         WaypointMission WaypointMission = new WaypointMission();
         
         public TestingPage()
@@ -118,8 +140,8 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
             {
                 String JsonString = JsonConvert.SerializeObject(DD);
                 System.Diagnostics.Debug.WriteLine("connect success!!");
-                socket.Emit("get gps", JsonString);
-                System.Diagnostics.Debug.WriteLine("Data to 'get gps' : " + JsonString);
+                socket.Emit("init_gcs", JsonString);
+                System.Diagnostics.Debug.WriteLine("Data to 'init_gcs' : " + JsonString);
             });
 
             DJISDKManager.Instance.SDKRegistrationStateChanged += Instance_SDKRegistrationEvent;
@@ -151,10 +173,10 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
                 missionID = 0,
                 waypoints = new List<Waypoint>()
                             {
-                                InitDumpWaypoint(nowLat+0.0001, nowLng+0.00015),
-                                InitDumpWaypoint(nowLat+0.0001, nowLng-0.00015),
-                                InitDumpWaypoint(nowLat-0.0001, nowLng-0.00015),
-                                InitDumpWaypoint(nowLat-0.0001, nowLng+0.00015),
+                                InitDumpWaypoint(nowLat+0.001, nowLng+0.0015),
+                                InitDumpWaypoint(nowLat+0.001, nowLng-0.0015),
+                                InitDumpWaypoint(nowLat-0.001, nowLng-0.0015),
+                                InitDumpWaypoint(nowLat-0.001, nowLng+0.0015),
                             }
             };
             WaypointMission = mission;
@@ -162,17 +184,33 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
 
         private async void Load_Mission(object sender, RoutedEventArgs value)
         {
+            var handler = DJISDKManager.Instance.WaypointMissionManager.GetWaypointMissionHandler(0);
+            var state = DJISDKManager.Instance.WaypointMissionManager.GetWaypointMissionHandler(0).GetCurrentState();
+            WaypointMissionState.Text = state.ToString();
+
             SDKError err = DJISDKManager.Instance.WaypointMissionManager.GetWaypointMissionHandler(0).LoadMission(this.WaypointMission);
-            System.Diagnostics.Debug.WriteLine("SDK load mission: {0}", err.ToString());
-            LoadMissionError.Text = "SDK load mission: {0}" + err.ToString();
+            System.Diagnostics.Debug.WriteLine("SDK load mission : ", err.ToString());
+            LoadMissionError.Text = "SDK load mission : " + err.ToString();
+        }
+
+        private async void Get_Loaded_Mission(object sender, RoutedEventArgs value)
+        {
+            var WaypointMission2 = DJISDKManager.Instance.WaypointMissionManager.GetWaypointMissionHandler(0).GetLoadedMission();
+        }
+
+        private async void Upload_Mission(object sender, RoutedEventArgs value)
+        {
+            DJISDKManager.Instance.WaypointMissionManager.GetWaypointMissionHandler(0).GetLoadedMission();
+            SDKError err = await DJISDKManager.Instance.WaypointMissionManager.GetWaypointMissionHandler(0).UploadMission();
+            System.Diagnostics.Debug.WriteLine("Upload mission to aircraft : ", err.ToString());
+            UploadMissionError.Text = "Upload mission to aircraft : " + err.ToString();
         }
 
         private async void Execute_Mission(object sender, RoutedEventArgs value)
         {
             var err = await DJISDKManager.Instance.WaypointMissionManager.GetWaypointMissionHandler(0).StartMission();
-            System.Diagnostics.Debug.WriteLine("Start mission: {0}" + err.ToString());
-            ExecuteMissionError.Text = "Start mission: {0}" + err.ToString();
-            
+            System.Diagnostics.Debug.WriteLine("Start mission : " + err.ToString());
+            ExecuteMissionError.Text = "Start mission : " + err.ToString();
         }
 
         private Waypoint InitDumpWaypoint(double latitude, double longitude)
@@ -202,15 +240,51 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
             takeOffError.Text = "Start send takeoff command: " + res.ToString();
         }
 
-        private void Socket_Send(object sender, RoutedEventArgs e)
+        private async void Start_Landing(object sender, RoutedEventArgs value)
         {
-            String JsonString = JsonConvert.SerializeObject(DD);
+            var res = await DJISDKManager.Instance.ComponentManager.GetFlightControllerHandler(0, 0).StartAutoLandingAsync();
+            System.Diagnostics.Debug.WriteLine("Start send landing command: " + res.ToString());
+            LandingError.Text = "Start send landing command: " + res.ToString();
+        }
 
-            socket.Emit("get gps", JsonString);
+        private async void Start_ReturnToHome(object sender, RoutedEventArgs value)
+        {
+            var res = await DJISDKManager.Instance.ComponentManager.GetFlightControllerHandler(0, 0).StartGoHomeAsync();
+            System.Diagnostics.Debug.WriteLine("Start send RTH command: " + res.ToString());
+            RthError.Text = "Start send RTH command: " + res.ToString();
+        }
 
-            System.Diagnostics.Debug.WriteLine("Data to 'get gps' => " + JsonString);
+        private async void Socket_Send(object sender, RoutedEventArgs e)
+        {
+            var JsonString = JsonConvert.SerializeObject(DD);
+            socket.Emit("drone_data", JsonString);
 
-            socket.On("send gps", (data) => System.Diagnostics.Debug.WriteLine("Data from 'send gps' => " + data));
+            System.Diagnostics.Debug.WriteLine("Data to 'drone_data' => " + JsonString);
+            SocketSend.Text = "Data to 'drone_data' => " + JsonString;
+
+            socket.On("dront_data", (data) => 
+            {
+                System.Diagnostics.Debug.WriteLine("Data from 'drone_data' => " + data);
+                //await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                //{
+                //    SocketSend.Text = "Data from 'drone_data' => " + data;
+                //});
+                
+            });
+        }
+
+        private async void Socket_Get(object sender, RoutedEventArgs e)
+        {
+            socket.On("client_gps", (data) =>
+            {
+                System.Diagnostics.Debug.WriteLine("Data from 'client_gps' => " + data);
+
+                JsonConvert.DeserializeObject<UserData>(data.ToString());
+                //await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                //{
+                //    SocketGet.Text = "Data from 'client_gps' => " + data;
+                //});
+            });
         }
 
         private async void Get_DroneData_Master(object sender, RoutedEventArgs value)
@@ -221,16 +295,12 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
             DJISDKManager.Instance.ComponentManager.GetFlightControllerHandler(0, 0).AltitudeChanged += Get_Altitude;
             DJISDKManager.Instance.ComponentManager.GetFlightControllerHandler(0, 0).GPSSignalLevelChanged += Get_GpsSignalLevel;
             DJISDKManager.Instance.ComponentManager.GetProductHandler(0).SerialNumberChanged += Get_SerialNumber;
+            DJISDKManager.Instance.WaypointMissionManager.GetWaypointMissionHandler(0).StateChanged += Get_WaypointMissionState;
         }
 
         private async void Get_DroneData_DeMaster(object sender, RoutedEventArgs value)
         {
-            DJISDKManager.Instance.ComponentManager.GetProductHandler(0).ProductTypeChanged -= Get_AircraftObject;
-            DJISDKManager.Instance.ComponentManager.GetBatteryHandler(0, 0).CurrentChanged -= Get_BatteryRemain;
             DJISDKManager.Instance.ComponentManager.GetFlightControllerHandler(0, 0).AircraftLocationChanged -= Get_Location;
-            DJISDKManager.Instance.ComponentManager.GetFlightControllerHandler(0, 0).AltitudeChanged -= Get_Altitude;
-            DJISDKManager.Instance.ComponentManager.GetFlightControllerHandler(0, 0).GPSSignalLevelChanged -= Get_GpsSignalLevel;
-            DJISDKManager.Instance.ComponentManager.GetProductHandler(0).SerialNumberChanged -= Get_SerialNumber;
         }
 
         private async void Select_Photo_Mode(object sender, RoutedEventArgs value)
@@ -324,6 +394,20 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
             ErrorinPhoto.Text = error.ToString();
         }
 
+        private async void Get_WaypointMissionState(object sender, RoutedEventArgs vlaue)
+        {
+            var state = DJISDKManager.Instance.WaypointMissionManager.GetWaypointMissionHandler(0).GetCurrentState();
+            WaypointMissionState.Text = state.ToString();
+        }
+
+        private async void Get_WaypointMissionState(object sender, WaypointMissionStateTransition? value)
+        {
+            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+            {
+                WaypointMissionState.Text = value.HasValue ? value.Value.current.ToString() : DJI.WindowsSDK.WaypointMissionState.UNKNOWN.ToString();
+            });
+        }
+
         private async void Get_AircraftObject(object sender, RoutedEventArgs value)
         {
             var craft = (await DJISDKManager.Instance.ComponentManager.GetProductHandler(0).GetProductTypeAsync()).value?.value;
@@ -345,7 +429,10 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
         private async void Get_BatteryRemain(object sender, RoutedEventArgs value)
         {
             var bat = (await DJISDKManager.Instance.ComponentManager.GetBatteryHandler(0, 0).GetChargeRemainingInPercentAsync()).value?.value;
-            DD.Battery((int)bat); // = (int)bat;
+            if (bat != null)
+            {
+                DD.Battery((int)bat); // = (int)bat;
+            }
             System.Diagnostics.Debug.WriteLine("Remaining Battery : " + bat);
             CurrentBattery.Text = "Remaining Battery : " + bat;
         }
@@ -355,7 +442,13 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
             //var bat = (await DJISDKManager.Instance.ComponentManager.GetBatteryHandler(0, 0).GetChargeRemainingInPercentAsync()).value?.value;
             await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
             {
-                DD.Battery((int)bat?.value); //= (int)bat?.value;
+                if (bat?.value != null)
+                {
+                    DD.Battery((int)bat?.value);
+                }//= (int)bat?.value;
+                var JsonString = JsonConvert.SerializeObject(DD);
+                socket.Emit("drone_data", JsonString);
+
                 System.Diagnostics.Debug.WriteLine("Remaining Battery : " + bat?.value);
                 CurrentBattery.Text = "Remaining Battery : " + bat?.value;
             });
@@ -388,6 +481,9 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
                 String latitude = value?.latitude.ToString();
                 DD.SetLocation(longitude, latitude);
 
+                var JsonString = JsonConvert.SerializeObject(DD);
+                socket.Emit("drone_data", JsonString);
+
                 System.Diagnostics.Debug.WriteLine("Longitude : " + longitude);
                 System.Diagnostics.Debug.WriteLine("Latitude : " + latitude);
 
@@ -401,6 +497,10 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
             await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
             {
                 DD.Altitude(value?.value.ToString());
+
+                var JsonString = JsonConvert.SerializeObject(DD);
+                socket.Emit("drone_data", JsonString);
+
                 System.Diagnostics.Debug.WriteLine("Altitude : " + value?.value);
                 CurrentAltitude.Text = "Altitude : " + value?.value;
             });
@@ -411,7 +511,7 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
             var level = (await DJISDKManager.Instance.ComponentManager.GetFlightControllerHandler(0, 0).GetGPSSignalLevelAsync()).value;
 
             System.Diagnostics.Debug.WriteLine("GPS Signal Level : " + level?.value);
-            CurrentGpsSignalLevel.Text = "GPS Signal Level : " + level?.value;
+            //CurrentGpsSignalLevel.Text = "GPS Signal Level : " + level?.value;
         }
 
         private async void Get_GpsSignalLevel(object sender, FCGPSSignalLevelMsg? value)
@@ -421,7 +521,7 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
             await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
             {
                 System.Diagnostics.Debug.WriteLine("GPS Signal Level : " + level?.value);
-                CurrentGpsSignalLevel.Text = "GPS Signal Level : " + level?.value;
+                //CurrentGpsSignalLevel.Text = "GPS Signal Level : " + level?.value;
             });
         }
 
@@ -434,7 +534,7 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
             await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
             {
                 System.Diagnostics.Debug.WriteLine("Serial Number : " + serialNumber_Drone?.value);
-                SerialNumber.Text = "Serial Number : " + serialNumber_Drone?.value;
+                //SerialNumber.Text = "Serial Number : " + serialNumber_Drone?.value;
             });
         }
 
@@ -447,7 +547,7 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
             await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
             {
                 System.Diagnostics.Debug.WriteLine("Serial Number : " + serialNumber_Drone?.value);
-                SerialNumber.Text = "Serial Number : " + serialNumber_Drone?.value;
+                //SerialNumber.Text = "Serial Number : " + serialNumber_Drone?.value;
             });
         }
 
