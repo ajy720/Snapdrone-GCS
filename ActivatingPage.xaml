@@ -25,13 +25,13 @@
             <Button Margin="10,160,0,0" Click="Get_AircraftObject" Content="GET AIRCRAFT" VerticalAlignment="Top" Width=" 130"/>
             <TextBlock Margin="200,166,0,-6" Name="CurrentAircaft" Text="Default"></TextBlock>
 
-            <Button Margin="10,220,0,0" Click="Get_BatteryRemain" Content="GET BATTERY" VerticalAlignment="Top" Width="130"/>
-            <TextBlock Margin="200,226,0,-6" Name="CurrentBattery" Text="Default"></TextBlock>
+            <Button Margin="10,196,0,0" Click="Get_BatteryRemain" Content="GET BATTERY" VerticalAlignment="Top" Width="130"/>
+            <TextBlock Margin="200,202,1014,768" Name="CurrentBattery" Text="Default"></TextBlock>
 
-            <Button Margin="10,280,0,0" Click="Get_Location" Content="GET LOCATION"  VerticalAlignment="Top" Width="130"/>
-            <TextBlock Margin="200,286,990,465" Name="CurrentLongitude" Text="Default"/>
-            <TextBlock Margin="200,316,990,465" x:Name="CurrentLatitude" Text="Default"/>
-            <TextBlock Margin="200,346,990,465" x:Name="CurrentAltitude" Text="Default"/>
+            <Button Margin="10,233,0,0" Click="Get_Location" Content="GET LOCATION"  VerticalAlignment="Top" Width="130"/>
+            <TextBlock Margin="200,239,981,733" Name="CurrentLongitude" Text="Default"/>
+            <TextBlock Margin="200,269,1001,706" x:Name="CurrentLatitude" Text="Default"/>
+            <TextBlock Margin="200,299,997,674" x:Name="CurrentAltitude" Text="Default"/>
             <!--
             <Button Margin="10,400,0,0" Click="Get_GpsSignalLevel" Content="GPS Signal Level"  VerticalAlignment="Top" Width="130"/>
             <TextBlock Margin="200,406,1053,437" Name="CurrentGpsSignalLevel" Text="Default"/>
@@ -68,18 +68,18 @@
 
 
 
-            <Button Content="Master" Margin="10,400,0,0" VerticalAlignment="Top" Click="Get_DroneData_Master"/>
-            <Button Content="DeMaster" Margin="110,400,0,0" VerticalAlignment="Top" Click="Get_DroneData_DeMaster"/>
+            <Button Content="Master" Margin="301,198,0,0" VerticalAlignment="Top" Click="Get_DroneData_Master"/>
+            <Button Content="DeMaster" Margin="372,198,0,0" VerticalAlignment="Top" Click="Get_DroneData_DeMaster"/>
 
 
-            <Button Content="Take Off" Margin="12,680,0,0" VerticalAlignment="Top" Width="130" Click="Start_Take_Off"/>
-            <TextBlock x:Name="takeOffError"  Margin="202,686,-2,-100" Text="Take Off Error" TextWrapping="Wrap"/>
+            <Button Content="Take Off" Margin="12,534,0,0" VerticalAlignment="Top" Width="130" Click="Start_Take_Off"/>
+            <TextBlock x:Name="takeOffError"  Margin="202,540,-2,46" Text="Take Off Error" TextWrapping="Wrap"/>
 
-            <Button Content="Landing" Margin="12,720,0,0" VerticalAlignment="Top" Width="130" Click="Start_Landing"/>
-            <TextBlock x:Name="LandingError"  Margin="202,726,-2,-100" Text="Landing Error" TextWrapping="Wrap"/>
+            <Button Content="Landing" Margin="12,574,0,0" VerticalAlignment="Top" Width="130" Click="Start_Landing"/>
+            <TextBlock x:Name="LandingError"  Margin="202,580,-2,46" Text="Landing Error" TextWrapping="Wrap"/>
 
-            <Button Content="RTH" Margin="12,760,0,0" VerticalAlignment="Top" Width="130" Click="Start_ReturnToHome"/>
-            <TextBlock x:Name="RthError"  Margin="202,766,-2,-100" Text="RTH Error" TextWrapping="Wrap"/>
+            <Button Content="RTH" Margin="12,614,0,0" VerticalAlignment="Top" Width="130" Click="Start_ReturnToHome"/>
+            <TextBlock x:Name="RthError"  Margin="202,620,-2,46" Text="RTH Error" TextWrapping="Wrap"/>
             <!--
             <Button Content="Throttle_Up" Margin="534,768,0,0" VerticalAlignment="Top" Click="Throttle_Up"/>
             <Button Content="Throttle_Down" Margin="525,821,0,0" VerticalAlignment="Top" Click="Throttle_Down"/>
@@ -112,30 +112,31 @@
             <Button x:Name="button" Content="STOP" Margin="408,788,0,0" VerticalAlignment="Top" Click="Emergency"/>
             -->
 
-            <Button Content="Init Mission" Click="Init_Mission" Margin="11,439,0,0" VerticalAlignment="Top"/>
+            <Button Content="Init Mission" Click="Init_Mission" Margin="11,331,0,0" VerticalAlignment="Top"/>
 
-            <Button Content="Load Mission" Click="Load_Mission" Margin="11,480,0,0" VerticalAlignment="Top"/>
-            <TextBlock x:Name="LoadMissionError"  Margin="200,486,1062,477" Text="Load Mission Error" TextWrapping="Wrap"/>
+            <Button Content="Load Mission" Click="Load_Mission" Margin="11,372,0,0" VerticalAlignment="Top"/>
+            <TextBlock x:Name="LoadMissionError"  Margin="200,378,1062,585" Text="Load Mission Error" TextWrapping="Wrap"/>
 
-            <Button Content="GetLoaded Mission" Click="Get_Loaded_Mission" Margin="11,520,0,0" VerticalAlignment="Top"/>
-            <TextBlock x:Name="GetLoadedMission"  Margin="200,526,1096,433" Text="Get Loaded Mission Error" TextWrapping="Wrap"/>
+            <Button Content="GetLoaded Mission" Click="Get_Loaded_Mission" Margin="11,412,0,0" VerticalAlignment="Top"/>
+            <TextBlock x:Name="GetLoadedMission"  Margin="200,418,1096,541" Text="Get Loaded Mission Error" TextWrapping="Wrap"/>
 
-            <Button Content="Upload Mission" Click="Upload_Mission" Margin="11,560,0,0" VerticalAlignment="Top"/>
-            <TextBlock x:Name="UploadMissionError"  Margin="200,566,1092,398" Text="Upload Mission Error" TextWrapping="Wrap"/>
+            <Button Content="Upload Mission" Click="Upload_Mission" Margin="11,452,0,0" VerticalAlignment="Top"/>
+            <TextBlock x:Name="UploadMissionError"  Margin="200,458,1092,506" Text="Upload Mission Error" TextWrapping="Wrap"/>
 
-            <Button Content="Execute Mission" Click="Execute_Mission" Margin="11,600,0,0" VerticalAlignment="Top"/>
-            <TextBlock x:Name="ExecuteMissionError"  Margin="200,606,1080,369" Text="Execute Mission Error" TextWrapping="Wrap"/>
-
-            <Button Content="WaypointMissionState" Click="Get_WaypointMissionState" Margin="11,640,0,0" VerticalAlignment="Top"/>
-            <TextBlock x:Name="WaypointMissionState" Margin="200,646,-68,0" Text="Waypoint Mission State" TextWrapping="Wrap" VerticalAlignment="Top"/>
+            <Button Content="Execute Mission" Click="Execute_Mission" Margin="11,492,0,0" VerticalAlignment="Top"/>
+            <TextBlock x:Name="ExecuteMissionError"  Margin="200,498,1080,477" Text="Execute Mission Error" TextWrapping="Wrap"/>
 
             <Button Content="Socket Send" Margin="430,580,0,0" Click="Socket_Send" VerticalAlignment="Top"/>
             <TextBlock x:Name="SocketSend" Margin="550,586,-68,0" Text="Send_Data" TextWrapping="Wrap" VerticalAlignment="Top"/>
-            
+
             <Button Content="Socket Get " Margin="430,620,0,0" Click="Socket_Get" VerticalAlignment="Top"/>
             <TextBlock x:Name="SocketGet" Margin="550,626,-68,0" Text="Get_Data" TextWrapping="Wrap" VerticalAlignment="Top"/>
 
-
+            <Button Content="WaypointMissionState" Click="Get_WaypointMissionState" Margin="11,674,0,0" VerticalAlignment="Top"/>
+            <TextBlock x:Name="WaypointMissionState" Margin="200,680,-68,0" Text="Waypoint Mission State" TextWrapping="Wrap" VerticalAlignment="Top"/>
+            <TextBlock x:Name="UploadState" Margin="200,710,-68,0" Text="Upload State" TextWrapping="Wrap" VerticalAlignment="Top"/>
+            <TextBlock x:Name="DownloadState" Margin="200,740,-68,0" Text="Download State" TextWrapping="Wrap" VerticalAlignment="Top"/>
+            <TextBlock x:Name="ExecutionState" Margin="200,770,-68,0" Text="Execution State" TextWrapping="Wrap" VerticalAlignment="Top"/>
 
             <!--<SwapChainPanel x:Name="swapChainPanel" Visibility="Visible" Margin="10,557,833,10" />-->
 

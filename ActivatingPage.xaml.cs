@@ -15,7 +15,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 using DJI.WindowsSDK;
-
+using DJI.WindowsSDK.Mission.Waypoint;
 using Newtonsoft.Json;
 using Quobject.SocketIoClientDotNet.Client;
 
@@ -188,7 +188,10 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
             var state = DJISDKManager.Instance.WaypointMissionManager.GetWaypointMissionHandler(0).GetCurrentState();
             WaypointMissionState.Text = state.ToString();
 
-            SDKError err = DJISDKManager.Instance.WaypointMissionManager.GetWaypointMissionHandler(0).LoadMission(this.WaypointMission);
+            var WaypointMission2 = DJISDKManager.Instance.WaypointMissionManager.GetWaypointMissionHandler(0).GetLoadedMission();
+
+            SDKError err = DJISDKManager.Instance.WaypointMissionManager.GetWaypointMissionHandler(0).LoadMission(WaypointMission2.Value);
+            
             System.Diagnostics.Debug.WriteLine("SDK load mission : ", err.ToString());
             LoadMissionError.Text = "SDK load mission : " + err.ToString();
         }
@@ -200,7 +203,7 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
 
         private async void Upload_Mission(object sender, RoutedEventArgs value)
         {
-            DJISDKManager.Instance.WaypointMissionManager.GetWaypointMissionHandler(0).GetLoadedMission();
+            //DJISDKManager.Instance.WaypointMissionManager.GetWaypointMissionHandler(0).GetLoadedMission();
             SDKError err = await DJISDKManager.Instance.WaypointMissionManager.GetWaypointMissionHandler(0).UploadMission();
             System.Diagnostics.Debug.WriteLine("Upload mission to aircraft : ", err.ToString());
             UploadMissionError.Text = "Upload mission to aircraft : " + err.ToString();
@@ -296,6 +299,9 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
             DJISDKManager.Instance.ComponentManager.GetFlightControllerHandler(0, 0).GPSSignalLevelChanged += Get_GpsSignalLevel;
             DJISDKManager.Instance.ComponentManager.GetProductHandler(0).SerialNumberChanged += Get_SerialNumber;
             DJISDKManager.Instance.WaypointMissionManager.GetWaypointMissionHandler(0).StateChanged += Get_WaypointMissionState;
+            DJISDKManager.Instance.WaypointMissionManager.GetWaypointMissionHandler(0).UploadStateChanged += Get_UploadState;
+            DJISDKManager.Instance.WaypointMissionManager.GetWaypointMissionHandler(0).DownloadStateChanged += Get_DownloadState;
+            DJISDKManager.Instance.WaypointMissionManager.GetWaypointMissionHandler(0).ExecutionStateChanged += Get_ExecutionState;
         }
 
         private async void Get_DroneData_DeMaster(object sender, RoutedEventArgs value)
@@ -405,6 +411,54 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
             await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
             {
                 WaypointMissionState.Text = value.HasValue ? value.Value.current.ToString() : DJI.WindowsSDK.WaypointMissionState.UNKNOWN.ToString();
+            });
+        }
+        /*
+        private async void Get_UploadState(object sender, RoutedEventArgs vlaue)
+        {
+            var state = DJISDKManager.Instance.WaypointMissionManager.GetWaypointMissionHandler(0).GetCurrentState();
+            UploadState.Text = state.ToString();
+        }
+        */
+        private async void Get_UploadState(WaypointMissionHandler sender, WaypointMissionUploadState? value)
+        {
+            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+            {
+                String data = value.HasValue ? JsonConvert.SerializeObject(value) : "Invalid data";
+                UploadState.Text = data;
+                System.Diagnostics.Debug.WriteLine("Upload State => " + data);
+            });
+        }
+        /*
+        private async void Get_DownloadState(object sender, RoutedEventArgs vlaue)
+        {
+            var state = DJISDKManager.Instance.WaypointMissionManager.GetWaypointMissionHandler(0).GetCurrentState();
+            WaypointMissionState.Text = state.ToString();
+        }
+        */
+        private async void Get_DownloadState(WaypointMissionHandler sender, WaypointMissionDownloadState? value)
+        {
+            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+            {
+                String data = value.HasValue ? JsonConvert.SerializeObject(value) : "Invalid data";
+                DownloadState.Text = data;
+                System.Diagnostics.Debug.WriteLine("Download State => " + data);
+            });
+        }
+        /*
+        private async void Get_ExecutionState(object sender, RoutedEventArgs vlaue)
+        {
+            var state = DJISDKManager.Instance.WaypointMissionManager.GetWaypointMissionHandler(0).GetCurrentState();
+            WaypointMissionState.Text = state.ToString();
+        }
+        */
+        private async void Get_ExecutionState(WaypointMissionHandler sender, WaypointMissionExecutionState? value)
+        {
+            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+            { 
+                String data = value.HasValue ? JsonConvert.SerializeObject(value) : "Invalid data";
+                ExecutionState.Text = data;
+                System.Diagnostics.Debug.WriteLine("Execution State => " + data);
             });
         }
 

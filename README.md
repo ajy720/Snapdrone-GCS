@@ -355,3 +355,9 @@ void UpdateJoystickValue(float throttle, float roll, float pitch, float yaw)
 작성일 : 8/3(토)
 
 Mission Flight 기능 코드를 넣었지만, 아직 INVALID_REQUEST_IN_CURRENT_STATE 에러로 실행 불가. 그 외 RTH, Take off, Landing 기능은 정상 작동. 추가해야 할 것은 Landing을 눌러도 완전 착륙은 x, 고도를 낮출 뿐
+
+---
+# 8/4~5 Upload
+작성일 : 8/5(월) AM 12:35
+
+WaypointMission load가 되지 않아서 모든 상태를 불러와서 확인할 수 있도록 코드 추가. 아직 드론이 없어서 테스트는 안 해봄.
