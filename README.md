@@ -44,6 +44,8 @@ Coming Soon.. (I think both Zoom & Pro will have same test environment)
 
 
 
+---
+
 # 7/24,25 드론 정보 받아오기
 
 작성일 : 7/25(수) 3:21AM
@@ -166,7 +168,7 @@ async와 await를 사용하여 비동기화를 꼭 시키자.
 
 
 
-
+---
 
 # 7/29,30,31 드론 정보 비동기로 받아오기
 
@@ -230,6 +232,8 @@ await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
 
 
 
+---
+
 # 7/31 mavic air 테스트 환경 설정 + 가상 컨트롤러 API
 
 작성일 : 7/31(수) 3:08AM
@@ -264,6 +268,8 @@ void UpdateJoystickValue(float throttle, float roll, float pitch, float yaw)
 - roll - 드론의 좌우 방향 제어 / 컨트롤러의 좌측 좌우
 - pitch - 드론의 전후 제어 / 컨트롤러의 우측 상하
 - yaw - 드론의 좌우 이동 제어 / 컨트롤러의 우측 좌우
+
+---
 
 # 8/2 WaypointMission에 대하여(미션 플라이트)
 
@@ -354,12 +360,18 @@ void UpdateJoystickValue(float throttle, float roll, float pitch, float yaw)
   | int                                              | repeatTimes                            | 미션 실행은 1번 이상 반복될 수 있다. 0은 미션이 한 번 실행되는 것을 의미하고, 반복되지 않는다. 1의 의미는 총 두 번 실행한다. (기본 1회 + value = 총 execute) |
   | int                                              | missionID                              | mission ID가 WaypointMission에 할당된다.                     |
 
+----
+
 # 8/3 Upload 
+
 작성일 : 8/3(토)
 
 Mission Flight 기능 코드를 넣었지만, 아직 INVALID_REQUEST_IN_CURRENT_STATE 에러로 실행 불가. 그 외 RTH, Take off, Landing 기능은 정상 작동. 추가해야 할 것은 Landing을 눌러도 완전 착륙은 x, 고도를 낮출 뿐
 
+---
+
 # 8/4~5 Upload
+
 작성일 : 8/5(월) AM 12:35
 
 WaypointMission load가 되지 않아서 모든 상태를 불러와서 확인할 수 있도록 코드 추가. 아직 드론이 없어서 테스트는 안 해봄.
