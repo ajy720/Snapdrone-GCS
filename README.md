@@ -1,10 +1,6 @@
 # SnapDrone GCS
 
-------
-
 ## How To Install
-
-------
 
 1. git clone https://github.com/dji-sdk/Windows-SDK.git
 
@@ -33,9 +29,7 @@
 
 ## How to set test environment
 
-------
-
-### MAVIC AIR(Support only Wi-Fi mode)
+**MAVIC AIR(Support only Wi-Fi mode)**
 
 1. Connect the aircraft to PC with USB.(At this time, the MAVIC AIR's Wi-Fi hasn't be connected.)
 2. Open DJI ASSISTANT2(download link : https://www.dji.com/kr/downloads/softwares/assistant-dji-2)
@@ -44,15 +38,15 @@
 5. Open GCS.
 6. Start Testing.
 
-### MAVIC 2(Zoom or Pro)
+**MAVIC 2(Zoom or Pro)**
 
 Coming Soon.. (I think both Zoom & Pro will have same test environment)
+
+
 
 # 7/24,25 드론 정보 받아오기
 
 작성일 : 7/25(수) 3:21AM
-
----
 
 ## 드론 정보를 받아오기 위한 기본 준비물
 
@@ -170,13 +164,13 @@ async와 await를 사용하여 비동기화를 꼭 시키자.
 
 **이번에 짠 코드를 재활용하여 다른 정보도 싹 다 얻어버리자!**
 
+
+
+
+
 # 7/29,30,31 드론 정보 비동기로 받아오기
 
 작성일 : 7/31(수)  1:11AM
-
----
-
-
 
 ## '드론 정보를 비동기로 가져온다' ?
 
@@ -232,11 +226,13 @@ await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
       });
 ```
 
+
+
+
+
 # 7/31 mavic air 테스트 환경 설정 + 가상 컨트롤러 API
 
 작성일 : 7/31(수) 3:08AM
-
----
 
 ## Wi-Fi 모드만 지원하는 MAVIC AIR를 조종기 없기 테스트 하는 법!
 
@@ -272,8 +268,6 @@ void UpdateJoystickValue(float throttle, float roll, float pitch, float yaw)
 # 8/2 WaypointMission에 대하여(미션 플라이트)
 
 작성일 : 8/2(금) AM 1:20 ~
-
----
 
 ## Waypoint Mission이란?
 
@@ -362,10 +356,6 @@ void UpdateJoystickValue(float throttle, float roll, float pitch, float yaw)
 
 # 8/3 Upload 
 작성일 : 8/3(토)
-
----
-
-
 
 Mission Flight 기능 코드를 넣었지만, 아직 INVALID_REQUEST_IN_CURRENT_STATE 에러로 실행 불가. 그 외 RTH, Take off, Landing 기능은 정상 작동. 추가해야 할 것은 Landing을 눌러도 완전 착륙은 x, 고도를 낮출 뿐
 
