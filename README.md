@@ -1,12 +1,60 @@
-# Take-Drone-Data
-# 7/24(화) ~ 7/25(수) 새벽까지 고된 삽질의 결과물 (뿌듯하다)
-
-작성일 : 7/25(수) 3:21AM
+# SnapDrone GCS
 
 ------
 
+## How To Install
 
-# 드론 정보를 받아오기 위한 기본 준비물
+------
+
+1. git clone https://github.com/dji-sdk/Windows-SDK.git
+
+2. delete Windows-SDK\Sample Code\DJISampleSources\DJISDKInitializing
+
+3. git clone https://github.com/ajy720/Snapdrone-GCS.git DJISDKInitializing(at Windows-SDK\Sample Code\DJISampleSourcesDJISampleSources)
+
+4. Open DJIWindowsSDKSample.sln in Windows-SDK\Sample Code
+
+5. Run(If you have some error when you run, follow solutions below)
+
+   1. Set minimum version  DJIWindowsSDKSample_x64 
+      1. right click on DJIWindowsSDKSample_x64
+      2. into Properties
+      3. Set minimum version to Build 16299 (Fall Creators Update, version 1709)
+   2. Change project target DJIVideoParser(Universal Windows)
+      1. right click on DJIVideoParser(Universal Windows)
+      2. into Retarget Projects
+      3. Set Windows SDK min. Version to 10.0.17763.0(or under)
+   3. Set startUp project
+      1. right click on DJIWindowsSDKSample_x64
+      2. click Set StartUp Projects
+   4. Start Debug with x64 solution platform
+
+   
+
+## How to set test environment
+
+------
+
+### MAVIC AIR(Support only Wi-Fi mode)
+
+1. Connect the aircraft to PC with USB.(At this time, the MAVIC AIR's Wi-Fi hasn't be connected.)
+2. Open DJI ASSISTANT2(download link : https://www.dji.com/kr/downloads/softwares/assistant-dji-2)
+3. After DJI ASSISTANT 2 connect MAVIC AIR, connect to MAVIC AIR's Wi-Fi.
+4. Open simulator in DJI ASSISTANT 2.
+5. Open GCS.
+6. Start Testing.
+
+### MAVIC 2(Zoom or Pro)
+
+Coming Soon.. (I think both Zoom & Pro will have same test environment)
+
+# 7/24,25 드론 정보 받아오기
+
+작성일 : 7/25(수) 3:21AM
+
+---
+
+## 드론 정보를 받아오기 위한 기본 준비물
 
 ```C#
 DJISDKManager.Instance.ComponentManager.
@@ -14,11 +62,7 @@ DJISDKManager.Instance.ComponentManager.
 
 
 
-------
-
-
-
-# 드론의 어디 Component를 이용할 건지?
+## 드론의 어디 Component를 이용할 건지?
 
 ```C#
 Get~~~Handler(parameter).
@@ -32,11 +76,7 @@ https://developer.dji.com/api-reference/windows-api/Components/ComponentManager.
 
 
 
-------
-
-
-
-# 가져올 상세 정보
+## 가져올 상세 정보
 
 ```C#
 Get~~~Async()
@@ -46,11 +86,7 @@ Get~~~Async()
 
 
 
-------
-
-
-
-# 종합해보면, 
+## 종합해보면, 
 
 ```C#
 DJISDKManager.Instance.ComponentManager.GetBatteryHandler(0, 0).GetChargeRemainingInPercentAsync().value
@@ -76,11 +112,7 @@ DJISDKManager.Instance.ComponentManager.GetBatteryHandler(0, 0).GetChargeRemaini
 
 
 
-------
-
-
-
-# 그 외 중요한 사항들
+## 그 외 중요한 사항들
 
 메인 페이지에서 버튼을 입력 받았을 때 출력하고 싶으면, 프론트 .xaml에
 
@@ -126,12 +158,6 @@ async와 await를 사용하여 비동기화를 꼭 시키자.
 
 
 
-------
-
-
-
-
-
 ## 마무리
 
 사실 드론 기체 이름 받아오는 DJISDJDEMO의 예제 코드가 더럽게 복잡한거였다.
@@ -144,15 +170,13 @@ async와 await를 사용하여 비동기화를 꼭 시키자.
 
 **이번에 짠 코드를 재활용하여 다른 정보도 싹 다 얻어버리자!**
 
-
-
-
-
 # 7/29,30,31 드론 정보 비동기로 받아오기
 
-
-
 작성일 : 7/31(수)  1:11AM
+
+---
+
+
 
 ## '드론 정보를 비동기로 가져온다' ?
 
@@ -163,10 +187,6 @@ e.g)
 ```c#
 DJISDKManager.Instance.ComponentManager.GetBatteryHandler(0, 0).ChargeRemainingInPercentChanged += Get_BatteryRemain;
 ```
-
-------
-
-
 
 
 
@@ -212,13 +232,11 @@ await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
       });
 ```
 
-
-
 # 7/31 mavic air 테스트 환경 설정 + 가상 컨트롤러 API
 
 작성일 : 7/31(수) 3:08AM
 
-
+---
 
 ## Wi-Fi 모드만 지원하는 MAVIC AIR를 조종기 없기 테스트 하는 법!
 
@@ -237,10 +255,6 @@ await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
 
 
 
-------
-
-
-
 ## VirtualRemoteController API
 
 - UpdateJoystickValue
@@ -255,13 +269,11 @@ void UpdateJoystickValue(float throttle, float roll, float pitch, float yaw)
 - pitch - 드론의 전후 제어 / 컨트롤러의 우측 상하
 - yaw - 드론의 좌우 이동 제어 / 컨트롤러의 우측 좌우
 
-
-
----
-
 # 8/2 WaypointMission에 대하여(미션 플라이트)
 
 작성일 : 8/2(금) AM 1:20 ~
+
+---
 
 ## Waypoint Mission이란?
 
@@ -269,11 +281,9 @@ void UpdateJoystickValue(float throttle, float roll, float pitch, float yaw)
 
 
 
-------
-
 ## Waypoint Mission의 속성들(중요한 것만)
 
-- WaypointMissionState - enum
+- ### WaypointMissionState - enum
 
   | property         | description                                                  |
   | ---------------- | ------------------------------------------------------------ |
@@ -287,7 +297,7 @@ void UpdateJoystickValue(float throttle, float roll, float pitch, float yaw)
 
   
 
-- WaypointMissionStateTransition - struct
+- ### WaypointMissionStateTransition - struct
 
   | type                 | variable name | description                          |
   | -------------------- | ------------- | ------------------------------------ |
@@ -296,7 +306,7 @@ void UpdateJoystickValue(float throttle, float roll, float pitch, float yaw)
 
   
 
-- WaypointMissionGotoFirstWaypointMode - enum
+- ### WaypointMissionGotoFirstWaypointMode - enum
 
   | property       | description                                                  |
   | -------------- | ------------------------------------------------------------ |
@@ -305,7 +315,7 @@ void UpdateJoystickValue(float throttle, float roll, float pitch, float yaw)
 
   
 
-- WaypointMissionExecutionState - struct
+- ### WaypointMissionExecutionState - struct
 
   | type                              | variable name       | description                                                  |
   | --------------------------------- | ------------------- | ------------------------------------------------------------ |
@@ -317,7 +327,7 @@ void UpdateJoystickValue(float throttle, float roll, float pitch, float yaw)
 
   
 
-- WaypointMissionExecuteState - enum
+- ### WaypointMissionExecuteState - enum
 
   | property              | description                                                  |
   | --------------------- | ------------------------------------------------------------ |
@@ -333,7 +343,7 @@ void UpdateJoystickValue(float throttle, float roll, float pitch, float yaw)
 
 
 
-- WaypointMission - struct
+- ### WaypointMission - struct
 
   | type                                             | variable name                          | description                                                  |
   | ------------------------------------------------ | -------------------------------------- | ------------------------------------------------------------ |
@@ -350,13 +360,15 @@ void UpdateJoystickValue(float throttle, float roll, float pitch, float yaw)
   | int                                              | repeatTimes                            | 미션 실행은 1번 이상 반복될 수 있다. 0은 미션이 한 번 실행되는 것을 의미하고, 반복되지 않는다. 1의 의미는 총 두 번 실행한다. (기본 1회 + value = 총 execute) |
   | int                                              | missionID                              | mission ID가 WaypointMission에 할당된다.                     |
 
-------
 # 8/3 Upload 
 작성일 : 8/3(토)
 
+---
+
+
+
 Mission Flight 기능 코드를 넣었지만, 아직 INVALID_REQUEST_IN_CURRENT_STATE 에러로 실행 불가. 그 외 RTH, Take off, Landing 기능은 정상 작동. 추가해야 할 것은 Landing을 눌러도 완전 착륙은 x, 고도를 낮출 뿐
 
----
 # 8/4~5 Upload
 작성일 : 8/5(월) AM 12:35
 
