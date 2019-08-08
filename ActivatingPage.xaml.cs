@@ -143,7 +143,7 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
                 socket.Emit("init_gcs", JsonString);
                 System.Diagnostics.Debug.WriteLine("Data to 'init_gcs' : " + JsonString);
             });
-
+            
             DJISDKManager.Instance.SDKRegistrationStateChanged += Instance_SDKRegistrationEvent;
             DJISDKManager.Instance.RegisterApp("c9e68649b0d02247fc1410eb");
         }
@@ -187,11 +187,15 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
             var handler = DJISDKManager.Instance.WaypointMissionManager.GetWaypointMissionHandler(0);
             var state = DJISDKManager.Instance.WaypointMissionManager.GetWaypointMissionHandler(0).GetCurrentState();
             WaypointMissionState.Text = state.ToString();
+            SDKError err = new SDKError();
 
             var WaypointMission2 = DJISDKManager.Instance.WaypointMissionManager.GetWaypointMissionHandler(0).GetLoadedMission();
 
-            SDKError err = DJISDKManager.Instance.WaypointMissionManager.GetWaypointMissionHandler(0).LoadMission(WaypointMission2.Value);
+            if (WaypointMission2 != null) err = DJISDKManager.Instance.WaypointMissionManager.GetWaypointMissionHandler(0).LoadMission(WaypointMission2.Value);
+            else err = SDKError.MISSION_WAYPOINT_NULL_MISSION;
             
+            
+
             System.Diagnostics.Debug.WriteLine("SDK load mission : ", err.ToString());
             LoadMissionError.Text = "SDK load mission : " + err.ToString();
         }

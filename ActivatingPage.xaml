@@ -23,15 +23,15 @@
 
 
             <Button Margin="10,160,0,0" Click="Get_AircraftObject" Content="GET AIRCRAFT" VerticalAlignment="Top" Width=" 130"/>
-            <TextBlock Margin="200,166,0,-6" Name="CurrentAircaft" Text="Default"></TextBlock>
+            <TextBlock Margin="200,166,985,809" Name="CurrentAircaft" Text="Default">Default</TextBlock>
 
             <Button Margin="10,196,0,0" Click="Get_BatteryRemain" Content="GET BATTERY" VerticalAlignment="Top" Width="130"/>
-            <TextBlock Margin="200,202,1014,768" Name="CurrentBattery" Text="Default"></TextBlock>
+            <TextBlock Margin="200,202,1014,768" Name="CurrentBattery" Text="Default">Default</TextBlock>
 
             <Button Margin="10,233,0,0" Click="Get_Location" Content="GET LOCATION"  VerticalAlignment="Top" Width="130"/>
-            <TextBlock Margin="200,239,981,733" Name="CurrentLongitude" Text="Default"/>
-            <TextBlock Margin="200,269,1001,706" x:Name="CurrentLatitude" Text="Default"/>
-            <TextBlock Margin="200,299,997,674" x:Name="CurrentAltitude" Text="Default"/>
+            <TextBlock Margin="200,239,1000,730" Name="CurrentLongitude" Text="Default">Default</TextBlock>
+            <TextBlock Margin="200,269,1000,700" x:Name="CurrentLatitude" Text="Default">Default</TextBlock>
+            <TextBlock Margin="200,299,1000,670" x:Name="CurrentAltitude" Text="Default">Default</TextBlock>
             <!--
             <Button Margin="10,400,0,0" Click="Get_GpsSignalLevel" Content="GPS Signal Level"  VerticalAlignment="Top" Width="130"/>
             <TextBlock Margin="200,406,1053,437" Name="CurrentGpsSignalLevel" Text="Default"/>
@@ -40,8 +40,8 @@
             <TextBlock Margin="200,466,1140,406" x:Name="SerialNumber" Text="Default"/>
         -->
             <Button Margin="797,304,0,0" Click="Get_Photo" Content="Take Photo"  VerticalAlignment="Top" Width="130"/>
-            <TextBlock Margin="949,310,-749,180" x:Name="RemainSpace" Text="Default"/>
-            <TextBlock Margin="949,340,-749,159" x:Name="ErrorinPhoto" Text="Default"/>
+            <TextBlock Margin="949,310,25,660" x:Name="RemainSpace" Text="Default"/>
+            <TextBlock Margin="949,340,11,632" x:Name="ErrorinPhoto" Text="Default"/>
 
 
             <TextBlock HorizontalAlignment="Left" Margin="525,100,0,0" Text="TextBlock" TextWrapping="Wrap" VerticalAlignment="Top" RenderTransformOrigin="-0.71,-2.8"/>
@@ -68,18 +68,18 @@
 
 
 
-            <Button Content="Master" Margin="301,198,0,0" VerticalAlignment="Top" Click="Get_DroneData_Master"/>
-            <Button Content="DeMaster" Margin="372,198,0,0" VerticalAlignment="Top" Click="Get_DroneData_DeMaster"/>
+            <Button Content="Master" Margin="226,100,0,0" VerticalAlignment="Top" Click="Get_DroneData_Master"/>
+            <Button Content="DeMaster" Margin="318,100,0,0" VerticalAlignment="Top" Click="Get_DroneData_DeMaster"/>
 
 
             <Button Content="Take Off" Margin="12,534,0,0" VerticalAlignment="Top" Width="130" Click="Start_Take_Off"/>
-            <TextBlock x:Name="takeOffError"  Margin="202,540,-2,46" Text="Take Off Error" TextWrapping="Wrap"/>
+            <TextBlock x:Name="takeOffError"  Margin="202,540,1042,430" Text="Take Off Error" TextWrapping="Wrap">Take Off Error</TextBlock>
 
             <Button Content="Landing" Margin="12,574,0,0" VerticalAlignment="Top" Width="130" Click="Start_Landing"/>
-            <TextBlock x:Name="LandingError"  Margin="202,580,-2,46" Text="Landing Error" TextWrapping="Wrap"/>
+            <TextBlock x:Name="LandingError"  Margin="202,580,1079,390" Text="Landing Error" TextWrapping="Wrap">Landing Error</TextBlock>
 
             <Button Content="RTH" Margin="12,614,0,0" VerticalAlignment="Top" Width="130" Click="Start_ReturnToHome"/>
-            <TextBlock x:Name="RthError"  Margin="202,620,-2,46" Text="RTH Error" TextWrapping="Wrap"/>
+            <TextBlock x:Name="RthError"  Margin="202,620,1081,339" Text="RTH Error" TextWrapping="Wrap">RTH Error</TextBlock>
             <!--
             <Button Content="Throttle_Up" Margin="534,768,0,0" VerticalAlignment="Top" Click="Throttle_Up"/>
             <Button Content="Throttle_Down" Margin="525,821,0,0" VerticalAlignment="Top" Click="Throttle_Down"/>
