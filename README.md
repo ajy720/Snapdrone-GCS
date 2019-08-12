@@ -191,15 +191,15 @@ DJISDKManager.Instance.ComponentManager.GetBatteryHandler(0, 0).ChargeRemainingI
 - UWP 프로젝트의 initial 페이지에 바로 이벤트랑 메소드 등록을 때려박는 멍청한 짓은 하지 말자.
 
 1. 아직 정확한 원인은 모름.
-2. 추측
-3. TestingPage가 로드 됨.
-4. 아직 SDKRegistration이 끝나지 않음
-5. ComponentManger 클래스를 받아오면 Null이 반환됨.
-6. 결론 : NullReferenceException이 발생한다.
-7. 해결법
-8. 새 메소드 하나를 만들자
-9. 그 안에 이벤트 다 넣어버리면 된다
-10. e.g)
+   1. 추측
+      1. TestingPage가 로드 됨.
+      2. 아직 SDKRegistration이 끝나지 않음
+      3. ComponentManger 클래스를 받아오면 Null이 반환됨.
+   2. 결론 : NullReferenceException이 발생한다.
+   3. 해결법
+      1. 새 메소드 하나를 만들자
+      2. 그 안에 이벤트 다 넣어버리면 된다
+      3. e.g)
 
 ```c#
 private async void Get_DroneData_Master(object sender, RoutedEventArgs value)
