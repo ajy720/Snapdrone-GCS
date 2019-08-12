@@ -360,13 +360,17 @@ void UpdateJoystickValue(float throttle, float roll, float pitch, float yaw)
   | int                                              | repeatTimes                            | 미션 실행은 1번 이상 반복될 수 있다. 0은 미션이 한 번 실행되는 것을 의미하고, 반복되지 않는다. 1의 의미는 총 두 번 실행한다. (기본 1회 + value = 총 execute) |
   | int                                              | missionID                              | mission ID가 WaypointMission에 할당된다.                     |
 
-----
+
+
+---
 
 # 8/3 Upload 
 
 작성일 : 8/3(토)
 
 Mission Flight 기능 코드를 넣었지만, 아직 INVALID_REQUEST_IN_CURRENT_STATE 에러로 실행 불가. 그 외 RTH, Take off, Landing 기능은 정상 작동. 추가해야 할 것은 Landing을 눌러도 완전 착륙은 x, 고도를 낮출 뿐
+
+
 
 ---
 
@@ -375,3 +379,24 @@ Mission Flight 기능 코드를 넣었지만, 아직 INVALID_REQUEST_IN_CURRENT_
 작성일 : 8/5(월) AM 12:35
 
 WaypointMission load가 되지 않아서 모든 상태를 불러와서 확인할 수 있도록 코드 추가. 아직 드론이 없어서 테스트는 안 해봄.
+
+
+
+---
+
+# 8/12 이건우 멘토님 멘토링
+
+작성일 : 8/12(월) 
+
+### 각 API의 역할
+
+LoadMission은 SDK에 WaypointMission을 올려놓는다.(일종의 버퍼)
+
+UploadMission은 일종의 버퍼에 저장된 WaypointMission을 드론에 업로드 한다.
+
+StartMission은 UploadMission이 끝난 후, 드론에게 미션 시작을 명령한다. 
+
+
+
+
+
