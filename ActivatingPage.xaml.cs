@@ -129,7 +129,7 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
         Socket socket = IO.Socket("https://api.teamhapco.com/");
         DroneData DD = new DroneData(80, "127", "37", "1.0");
         UserData UD = new UserData("127", "37");
-        WaypointMission WaypointMission = new WaypointMission();
+        WaypointMission WaypointMission;
         
         public TestingPage()
         {
@@ -189,10 +189,10 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
             WaypointMissionState.Text = state.ToString();
             SDKError err = new SDKError();
 
-            var WaypointMission2 = DJISDKManager.Instance.WaypointMissionManager.GetWaypointMissionHandler(0).GetLoadedMission();
+            //var WaypointMission2 = DJISDKManager.Instance.WaypointMissionManager.GetWaypointMissionHandler(0).GetLoadedMission();
 
-            if (WaypointMission2 != null) err = DJISDKManager.Instance.WaypointMissionManager.GetWaypointMissionHandler(0).LoadMission(WaypointMission2.Value);
-            else err = SDKError.MISSION_WAYPOINT_NULL_MISSION;
+            err = DJISDKManager.Instance.WaypointMissionManager.GetWaypointMissionHandler(0).LoadMission(WaypointMission);
+            //else err = SDKError.MISSION_WAYPOINT_NULL_MISSION;
             
             
 
@@ -236,8 +236,21 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
                 shootPhotoTimeInterval = -1,
                 shootPhotoDistanceInterval = -1,
                 waypointActions = new List<WaypointAction>()
+                {
+                    InitDumpWaypointAction(1000, WaypointActionType.STAY),
+                }
             };
             return waypoint;
+        }
+
+        private WaypointAction InitDumpWaypointAction(int Param, WaypointActionType actiontype)
+        {
+            WaypointAction action = new WaypointAction()
+            {
+                actionType = actiontype,
+                actionParam = Param
+            };
+            return action;
         }
 
         private async void Start_Take_Off(object sender, RoutedEventArgs value)
@@ -304,10 +317,10 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
             DJISDKManager.Instance.ComponentManager.GetProductHandler(0).SerialNumberChanged += Get_SerialNumber;
             DJISDKManager.Instance.WaypointMissionManager.GetWaypointMissionHandler(0).StateChanged += Get_WaypointMissionState;
             DJISDKManager.Instance.WaypointMissionManager.GetWaypointMissionHandler(0).UploadStateChanged += Get_UploadState;
-            DJISDKManager.Instance.WaypointMissionManager.GetWaypointMissionHandler(0).DownloadStateChanged += Get_DownloadState;
+            //DJISDKManager.Instance.WaypointMissionManager.GetWaypointMissionHandler(0).DownloadStateChanged += Get_DownloadState;
             DJISDKManager.Instance.WaypointMissionManager.GetWaypointMissionHandler(0).ExecutionStateChanged += Get_ExecutionState;
         }
-
+            
         private async void Get_DroneData_DeMaster(object sender, RoutedEventArgs value)
         {
             DJISDKManager.Instance.ComponentManager.GetFlightControllerHandler(0, 0).AircraftLocationChanged -= Get_Location;
@@ -439,16 +452,16 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
             var state = DJISDKManager.Instance.WaypointMissionManager.GetWaypointMissionHandler(0).GetCurrentState();
             WaypointMissionState.Text = state.ToString();
         }
-        */
-        private async void Get_DownloadState(WaypointMissionHandler sender, WaypointMissionDownloadState? value)
-        {
-            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-            {
-                String data = value.HasValue ? JsonConvert.SerializeObject(value) : "Invalid data";
-                DownloadState.Text = data;
-                System.Diagnostics.Debug.WriteLine("Download State => " + data);
-            });
-        }
+        //*/
+        //private async void Get_DownloadState(WaypointMissionHandler sender, WaypointMissionDownloadState? value)
+        //{
+        //    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+        //    {
+        //        String data = value.HasValue ? JsonConvert.SerializeObject(value) : "Invalid data";
+        //        DownloadState.Text = data;
+        //        System.Diagnostics.Debug.WriteLine("Download State => " + data);
+        //    });
+        //}
         /*
         private async void Get_ExecutionState(object sender, RoutedEventArgs vlaue)
         {
