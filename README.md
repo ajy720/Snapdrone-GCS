@@ -406,3 +406,100 @@ StartMission은 UploadMission이 끝난 후, 드론에게 미션 시작을 명�
 
 WaypointMission을 직접 만들어도 되는데, 그러지 않았던 이유는 드론의 방향을 알 수 있는 방법을 몰랐기 때문이다. 하지만 IMU 센서가 그 역할을 한다는 것을 깨닫고 가능성을 생각하게 되었다.
 
+
+
+# 8/13 수동 고도 조절
+
+작성일 : 8/14(수) AM 1:59
+
+## 서론
+
+Waypoint Mission의 API가 도저히 먹통임을 깨닫고, 직접 만들기로 결심.
+
+대략 순서를 정리해보면 
+
+> 1. 드론을 이륙(take off) 시킨다.
+> 2. 드론을 목표 고도(altitude)까지 상승시킨다.
+> 3. 드론의 IMU 센서를 이용하여 어느 방향을 바라보고 있는지 파악한다.
+> 4. 드론의 방향을 목적지를 향해 설정한다.
+> 5. 드론을 이동시킨다.
+
+현재 단계는 1, 2단계는 성공했다.
+
+
+
+## 본론
+
+일단 내가 직접 만든 Mission Flight의 Method 이름은 `Run_MissionFlight`이다.
+
+인자로 목표 위도, 경도, 고도를 받아 목표 좌표로 이동하는 코드를 짜고 있다.
+
+#### Zero Step
+
+​	받은 인자를 현재 드론의 위치와 비교할 수 있도록 `double` 형으로 바꿔야 한다.
+
+​	`Convert.ToDouble()`를 사용하자.
+
+​	현재 드론의 위치를 저장한 지역 변수를 하나 선언하자. `double nowlat`
+
+#### First Step
+
+​	드론 이륙부터 시키자. 저번에 이미 했던 것처럼  `StartTakeoffAsync()` 메서드를 	사용하자.
+
+#### Second Step
+
+​	드론 고도를 상승시켜야 하니 [UpdateJoystickValue](##VirtualRemoteController API)를 사용하자.
+
+`DJISDKManager.Instance.VirtualRemoteController.UpdateJoystickValue(1, 0, 0, 0);`
+
+#### Third Step 
+
+​	드론이 고도를 올리다가 목표 고도에 도달하면 그만 고도를 유지하도록 하자.
+
+```C#
+while(true){
+    nowalt = (double)(await DJISDKManager.Instance.ComponentManager.GetFlightControllerHandler(0, 0).GetAltitudeAsync()).value?.value;
+    if(nowalt >= alt){
+		DJISDKManager.Instance.VirtualRemoteController.UpdateJoystickValue(0, 0, 0, 0);
+        break;
+    }
+    
+}
+```
+
+
+
+*(Actually, I don't know how to do better this feature. I think it must have better way.)*
+
+더 좋은 방법이 분명이 존재할 것이라고 믿지만, 일단은 이 방식으로 구현했다.
+
+~~작동하긴 하더라...~~
+
+
+
+## 결론
+
+작동하기는 하는데,,,, Third Step 부분 코드가 아쉽다. 비동기에 대해서 공부를 많이 해야할 것 같다. 앞으로 IMU 센서 값 받아서 방향 직접 계산하려니 막막하다. 화이팅!
+
+
+
+#### 그 외 그냥 하고싶은 잡담
+
+깃헙 페이지를 파서 여기다가 이렇게 적지 말고 블로그 해보려고 하는데 중간평가랑 겹치는 바람에 시간이 부족해서~~(핑계는 참)~~ 아직도 여기다가 쓴다. 하루 빨리 옮겨 가기를! 그래도 아직 준비가 덜 됐긴 하지만 페이지는 파놨다. [여기!](ajy720.github.io) 
+
+
+
+README.md를 작성할 때 마다 스스로가 성장함을 느낀다. 그 성취감에 이 README를 계속 이어 쓰고 있지 않을까 생각한다. 특히 md파일 작성하는 것은 한 달이 채 안되는 시간에 엄청 늘었다. 아직 많이 부족하지만 한 달 전의 나를 되돌아 보니 아직 앞으로도 한참 남았구나 싶다.
+
+
+
+오늘도 1 commit ㅎ
+
+
+
+
+
+
+
+​	
+
