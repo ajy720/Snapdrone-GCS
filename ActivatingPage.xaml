@@ -82,7 +82,7 @@
             <TextBlock x:Name="ConfirmLandingError"  Margin="211,806,393,164" TextWrapping="Wrap">Confirm Landing Error</TextBlock>
 
             <Button Content="RTH" Margin="12,614,0,0" VerticalAlignment="Top" Width="130" Click="Start_ReturnToHome"/>
-            <TextBlock x:Name="RthError"  Margin="208,620,404,339" Text="RTH Error" TextWrapping="Wrap">RTH Error</TextBlock>
+            <TextBlock x:Name="RthError"  Margin="208,620,404,339" TextWrapping="Wrap">RTH Error</TextBlock>
             <!--
             <Button Content="Throttle_Up" Margin="534,768,0,0" VerticalAlignment="Top" Click="Throttle_Up"/>
             <Button Content="Throttle_Down" Margin="525,821,0,0" VerticalAlignment="Top" Click="Throttle_Down"/>

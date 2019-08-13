@@ -166,8 +166,7 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
             {
                 //nowalt = Convert.ToDouble(DD.Altitude());
                 nowalt =(double)(await DJISDKManager.Instance.ComponentManager.GetFlightControllerHandler(0, 0).GetAltitudeAsync()).value?.value;
-                if (nowalt >= alt)
-                {
+                if (nowalt >= alt){
                     DJISDKManager.Instance.VirtualRemoteController.UpdateJoystickValue(0, 0, 0, 0);
                     break;
                 }
