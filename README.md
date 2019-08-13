@@ -408,6 +408,8 @@ WaypointMission을 직접 만들어도 되는데, 그러지 않았던 이유는 
 
 
 
+---
+
 # 8/13 수동 고도 조절
 
 작성일 : 8/14(수) AM 1:59
@@ -434,7 +436,7 @@ Waypoint Mission의 API가 도저히 먹통임을 깨닫고, 직접 만들기로
 
 인자로 목표 위도, 경도, 고도를 받아 목표 좌표로 이동하는 코드를 짜고 있다.
 
-#### Zero Step
+### Zero Step
 
 ​	받은 인자를 현재 드론의 위치와 비교할 수 있도록 `double` 형으로 바꿔야 한다.
 
@@ -442,17 +444,17 @@ Waypoint Mission의 API가 도저히 먹통임을 깨닫고, 직접 만들기로
 
 ​	현재 드론의 위치를 저장한 지역 변수를 하나 선언하자. `double nowlat`
 
-#### First Step
+### First Step
 
 ​	드론 이륙부터 시키자. 저번에 이미 했던 것처럼  `StartTakeoffAsync()` 메서드를 	사용하자.
 
-#### Second Step
+### Second Step
 
 ​	드론 고도를 상승시켜야 하니 [UpdateJoystickValue](##VirtualRemoteController API)를 사용하자.
 
-`DJISDKManager.Instance.VirtualRemoteController.UpdateJoystickValue(1, 0, 0, 0);`
+​	`	DJISDKManager.Instance.VirtualRemoteController.UpdateJoystickValue(1, 0, 0, 0);`
 
-#### Third Step 
+### Third Step
 
 ​	드론이 고도를 올리다가 목표 고도에 도달하면 그만 고도를 유지하도록 하자.
 
@@ -485,7 +487,7 @@ while(true){
 
 #### 그 외 그냥 하고싶은 잡담
 
-깃헙 페이지를 파서 여기다가 이렇게 적지 말고 블로그 해보려고 하는데 중간평가랑 겹치는 바람에 시간이 부족해서~~(핑계는 참)~~ 아직도 여기다가 쓴다. 하루 빨리 옮겨 가기를! 그래도 아직 준비가 덜 됐긴 하지만 페이지는 파놨다. [여기!](ajy720.github.io) 
+깃헙 페이지를 파서 여기다가 이렇게 적지 말고 블로그 해보려고 하는데 중간평가랑 겹치는 바람에 시간이 부족해서(핑계는 참) 아직도 여기다가 쓴다. 하루 빨리 옮겨 가기를! 그래도 아직 준비가 덜 됐긴 하지만 페이지는 파놨다. [여기!](ajy720.github.io) 
 
 
 
@@ -496,6 +498,8 @@ README.md를 작성할 때 마다 스스로가 성장함을 느낀다. 그 성�
 오늘도 1 commit ㅎ
 
 
+
+---
 
 
 
