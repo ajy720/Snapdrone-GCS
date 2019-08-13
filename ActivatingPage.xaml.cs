@@ -25,10 +25,10 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
 {
     public class Location
     {
-        [JsonProperty("longitude")]
-        private String _longitude;
         [JsonProperty("latitude")]
-        private String _latitude;
+        private String _latitude;//위도 (-90~90)
+        [JsonProperty("longitude")]
+        private String _longitude; //경도 (-180~180)
 
         public String Longitude() => this._longitude;
         public void Longitude(String longitude) => this._longitude = longitude;
@@ -47,7 +47,7 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
         //}
 
         // Constructor
-        public Location(String longitude, String latitude)
+        public Location(String latitude, String longitude)
         {
             Longitude(longitude);
             Latitude(latitude);
@@ -68,11 +68,11 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
             // Default Constructor
         }
 
-        public DroneData(int battery, String longitude, String latitude, String altitude)
+        public DroneData(int battery, String latitude, String longitude, String altitude)
         {
             // Constructor
             _battery = battery;
-            _location = new Location(longitude, latitude);
+            _location = new Location(latitude, longitude);
             _altitude = altitude;
         }
 
@@ -95,7 +95,7 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
         public String Altitude() => this._altitude;
         public void Altitude(String altitude) => this._altitude = altitude;
 
-        public void SetLocation(String longitude, String latitude)
+        public void SetLocation(String latitude, String longitude)
         {
             _location.Longitude(longitude); // = longitude;
             _location.Latitude(latitude); // = latitude;
@@ -112,12 +112,12 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
             //Default Constructor
         }
 
-        public UserData(String longitude, String latitude) => _location = new Location(longitude, latitude);
+        public UserData(String longitude, String latitude) => _location = new Location(latitude, longitude);
 
         public Location Location() => this._location;
         public void Location(Location location) => this._location = location;
 
-        public void SetLocation(String longitude, String latitude)
+        public void SetLocation(String latitude, String longitude)
         {
             _location.Longitude(longitude); // = longitude;
             _location.Latitude(latitude); // = latitude;
@@ -127,8 +127,8 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
     public sealed partial class TestingPage : Page
     {
         Socket socket = IO.Socket("https://api.teamhapco.com/");
-        DroneData DD = new DroneData(80, "127", "37", "1.0");
-        UserData UD = new UserData("127", "37");
+        DroneData DD = new DroneData(80, "37", "127", "1.0");
+        UserData UD = new UserData("37", "127");
         WaypointMission WaypointMission;
         
         public TestingPage()
@@ -147,6 +147,39 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
             DJISDKManager.Instance.SDKRegistrationStateChanged += Instance_SDKRegistrationEvent;
             DJISDKManager.Instance.RegisterApp("c9e68649b0d02247fc1410eb");
         }
+
+        //Handmade Mission Flight
+        private async void Run_MissionFlight(string _latitude, string _longitude, string _altitude)
+        {
+            var lat = Convert.ToDouble(_latitude);
+            var lng = Convert.ToDouble(_longitude);
+            var alt = Convert.ToDouble(_altitude);
+
+            double nowalt;
+
+            var err = await DJISDKManager.Instance.ComponentManager.GetFlightControllerHandler(0, 0).StartTakeoffAsync();
+            System.Diagnostics.Debug.WriteLine("Start send takeoff command: " + err.ToString());
+            takeOffError.Text = "Start send takeoff command: " + err.ToString();
+
+            DJISDKManager.Instance.VirtualRemoteController.UpdateJoystickValue(1, 0, 0, 0);
+            while (true)
+            {
+                //nowalt = Convert.ToDouble(DD.Altitude());
+                nowalt =(double)(await DJISDKManager.Instance.ComponentManager.GetFlightControllerHandler(0, 0).GetAltitudeAsync()).value?.value;
+                if (nowalt >= alt)
+                {
+                    DJISDKManager.Instance.VirtualRemoteController.UpdateJoystickValue(0, 0, 0, 0);
+                    break;
+                }
+            }
+        }
+
+        private async void TEMP_Start(object sender, RoutedEventArgs value)
+        {
+            Run_MissionFlight("37", "127", "8");
+        }
+
+
 
         private async void Init_Mission(object sender, RoutedEventArgs value)
         {
@@ -258,6 +291,7 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
             var res = await DJISDKManager.Instance.ComponentManager.GetFlightControllerHandler(0, 0).StartTakeoffAsync();
             System.Diagnostics.Debug.WriteLine("Start send takeoff command: " + res.ToString());
             takeOffError.Text = "Start send takeoff command: " + res.ToString();
+            
         }
 
         private async void Start_Landing(object sender, RoutedEventArgs value)
@@ -265,6 +299,13 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
             var res = await DJISDKManager.Instance.ComponentManager.GetFlightControllerHandler(0, 0).StartAutoLandingAsync();
             System.Diagnostics.Debug.WriteLine("Start send landing command: " + res.ToString());
             LandingError.Text = "Start send landing command: " + res.ToString();
+        }
+
+        private async void Confirm_Landing(object sender, RoutedEventArgs value)
+        {
+            var res = await DJISDKManager.Instance.ComponentManager.GetFlightControllerHandler(0, 0).ConfirmLandingAsync();
+            System.Diagnostics.Debug.WriteLine("Start send confirm landing command: " + res.ToString());
+            ConfirmLandingError.Text = "Start send confirm landing command: " + res.ToString();
         }
 
         private async void Start_ReturnToHome(object sender, RoutedEventArgs value)

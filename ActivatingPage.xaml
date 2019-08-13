@@ -73,10 +73,13 @@
 
 
             <Button Content="Take Off" Margin="12,534,0,0" VerticalAlignment="Top" Width="130" Click="Start_Take_Off"/>
-            <TextBlock x:Name="takeOffError"  Margin="208,540,244,430" Text="Take Off Error" TextWrapping="Wrap">Take Off Error</TextBlock>
+            <TextBlock x:Name="takeOffError"  Margin="208,540,244,430" TextWrapping="Wrap">Take Off Error</TextBlock>
 
             <Button Content="Landing" Margin="12,574,0,0" VerticalAlignment="Top" Width="130" Click="Start_Landing"/>
-            <TextBlock x:Name="LandingError"  Margin="208,580,396,390" Text="Landing Error" TextWrapping="Wrap">Landing Error</TextBlock>
+            <TextBlock x:Name="LandingError"  Margin="208,580,396,390" TextWrapping="Wrap">Landing Error</TextBlock>
+
+            <Button Content="Landing Confirm" Margin="15,800,0,0" VerticalAlignment="Top" Width="130" Click="Confirm_Landing"/>
+            <TextBlock x:Name="ConfirmLandingError"  Margin="211,806,393,164" TextWrapping="Wrap">Confirm Landing Error</TextBlock>
 
             <Button Content="RTH" Margin="12,614,0,0" VerticalAlignment="Top" Width="130" Click="Start_ReturnToHome"/>
             <TextBlock x:Name="RthError"  Margin="208,620,404,339" Text="RTH Error" TextWrapping="Wrap">RTH Error</TextBlock>
@@ -137,6 +140,7 @@
             <TextBlock x:Name="UploadState" Margin="200,710,-68,0" Text="Upload State" TextWrapping="Wrap" VerticalAlignment="Top"/>
             <TextBlock x:Name="DownloadState" Margin="200,740,-68,0" Text="Download State" TextWrapping="Wrap" VerticalAlignment="Top"/>
             <TextBlock x:Name="ExecutionState" Margin="200,770,-68,0" Text="Execution State" TextWrapping="Wrap" VerticalAlignment="Top" SelectionChanged="ExecutionState_SelectionChanged"/>
+            <Button x:Name="button" Content="Button" Margin="370,170,0,0" VerticalAlignment="Top" Click="TEMP_Start"/>
 
             <!--<SwapChainPanel x:Name="swapChainPanel" Visibility="Visible" Margin="10,557,833,10" />-->
 
