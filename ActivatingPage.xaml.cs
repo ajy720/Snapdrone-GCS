@@ -196,7 +196,7 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
             
             
 
-            System.Diagnostics.Debug.WriteLine("SDK load mission : ", err.ToString());
+            System.Diagnostics.Debug.WriteLine("SDK load mission : " + err.ToString());
             LoadMissionError.Text = "SDK load mission : " + err.ToString();
         }
 
@@ -209,7 +209,7 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
         {
             //DJISDKManager.Instance.WaypointMissionManager.GetWaypointMissionHandler(0).GetLoadedMission();
             SDKError err = await DJISDKManager.Instance.WaypointMissionManager.GetWaypointMissionHandler(0).UploadMission();
-            System.Diagnostics.Debug.WriteLine("Upload mission to aircraft : ", err.ToString());
+            System.Diagnostics.Debug.WriteLine("Upload mission to aircraft : " + err.ToString());
             UploadMissionError.Text = "Upload mission to aircraft : " + err.ToString();
         }
 
@@ -655,6 +655,9 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
         //private async void Roll_Down(object sender, RoutedEventArgs value) => DJISDKManager.Instance.VirtualRemoteController.UpdateJoystickValue(0, -1, 0, 0);
         private async void Emergency(object sender, RoutedEventArgs value) => DJISDKManager.Instance.VirtualRemoteController.UpdateJoystickValue(0, 0, 0, 0);
 
-        
+        private void ExecutionState_SelectionChanged(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
