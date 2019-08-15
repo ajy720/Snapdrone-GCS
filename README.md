@@ -501,7 +501,23 @@ README.md를 작성할 때 마다 스스로가 성장함을 느낀다. 그 성�
 
 ---
 
+# 8/15 Waypoint Mission
 
+작성일 : 8/15(목) PM 11:13
+
+드론의 IMU 센서를 통해 Waypoint Mission을 직접 만들어보려 했는데, DJI SDK가 IMU 센서의 값을 받아오는 API는 만들어 놓지 않았다(안전 때문이라고 믿는다.) .
+
+그리하여 직접 만드는 것은 포기하고, 기존에 하던 대로 Waypoint Mission API를 삽질해서 뚫어보려 시도했다. 
+
+하지만 곧 깨달았다.
+
+MAVIC AIR는 DJI Windows SDK 에서 지원하는 Waypoint Mission을 사용하지 못한다.
+
+![1565878594722](C:\Users\현스기\AppData\Roaming\Typora\typora-user-images\1565878594722.png)
+
+보면 알 수 있듯 Flight controller firmware 3.2.10.0 혹은 그 이상만 지원한다고 나와있는데, MAVIC AIR는 애초에 FC를 사용하지 않는다.(Wi -Fi 모드만 지원)
+
+그러니 빨리 MAVIC 2를 사버리자,, 
 
 
 
