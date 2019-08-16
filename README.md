@@ -513,7 +513,7 @@ README.md를 작성할 때 마다 스스로가 성장함을 느낀다. 그 성�
 
 MAVIC AIR는 DJI Windows SDK 에서 지원하는 Waypoint Mission을 사용하지 못한다.
 
-![1565878594722](images\1565878594722.png)
+![1565878594722](./images/1565878594722.png)
 
 보면 알 수 있듯 Flight controller firmware 3.2.10.0 혹은 그 이상만 지원한다고 나와있는데, MAVIC AIR는 애초에 FC를 사용하지 않는다.(Wi -Fi 모드만 지원)
 
