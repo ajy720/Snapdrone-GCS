@@ -10,7 +10,12 @@
 
 4. Open DJIWindowsSDKSample.sln in Windows-SDK\Sample Code
 
-5. Run(If you have some error when you run, follow solutions below)
+5. Add package - Find in NuGet Package Manager
+
+   1. SocketIoClientDotNet
+   2. Newtonsoft.Json
+
+6. Run(If you have some error when you run, follow solutions below)
 
    1. Set minimum version  DJIWindowsSDKSample_x64 
       1. right click on DJIWindowsSDKSample_x64
