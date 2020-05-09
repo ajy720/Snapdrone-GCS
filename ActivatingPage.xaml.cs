@@ -131,14 +131,14 @@ namespace DJIWindowsSDKSample.DJISDKInitializing
         public static float Degree=0;
     }
 
-    public sealed partial class TestingPage : Page
+    public sealed partial class ActivatingPage : Page
     {
         Socket socket = IO.Socket("https://api.teamhapco.com/");
         DroneData DD = new DroneData(80, "37", "127", "1.0");
         UserData UD = new UserData("37", "127");
         WaypointMission WaypointMission;
         
-        public TestingPage()
+        public ActivatingPage()
         {
             this.InitializeComponent();
 
